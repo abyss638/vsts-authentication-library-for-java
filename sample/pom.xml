@@ -22,8 +22,8 @@ Licensed under the MIT license. See License.txt in the project root. -->
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -33,6 +33,12 @@ Licensed under the MIT license. See License.txt in the project root. -->
         <dependency>
             <groupId>com.microsoft.alm</groupId>
             <artifactId>auth-secure-storage</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>1.7.36</version>
         </dependency>
     </dependencies>
 </project>

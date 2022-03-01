@@ -99,7 +99,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>animal-sniffer-maven-plugin</artifactId>
-          <version>1.14</version>
+          <version>1.21</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
