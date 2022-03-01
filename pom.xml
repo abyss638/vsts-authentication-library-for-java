@@ -49,16 +49,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
     <tag>HEAD</tag>
   </scm>
 
-  <repositories>
-    <repository>
-      <id>oss.sonatype.org</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
@@ -73,9 +63,9 @@ Licensed under the MIT license. See License.txt in the project root. -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <slf4j.version>1.7.19</slf4j.version>
+    <slf4j.version>1.7.36</slf4j.version>
     <oauth2.useragent.version>0.11.3</oauth2.useragent.version>
-    <jackson.version>2.4.1</jackson.version>
+    <jackson.version>2.13.1</jackson.version>
   </properties>
 
   <build>
@@ -84,7 +74,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.1</version>
+          <version>2.5.3</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -94,7 +84,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.10.0</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -104,52 +94,52 @@ Licensed under the MIT license. See License.txt in the project root. -->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>2.15</version>
+          <version>3.1.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>2.4</version>
+          <version>3.2.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.10.3</version>
+          <version>3.3.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.18.1</version>
+          <version>2.22.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>2.18.1</version>
+          <version>2.22.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>2.4</version>
+          <version>3.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.7</version>
+          <version>2.8.2</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-gpg-plugin</artifactId>
-          <version>1.6</version>
+          <version>3.0.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.gmavenplus</groupId>
           <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.5</version>
+          <version>1.13.1</version>
           <executions>
             <execution>
               <id>gmavenplus-test</id>
               <goals>
-                <goal>testCompile</goal>
+                <goal>compileTests</goal>
               </goals>
             </execution>
           </executions>
@@ -157,14 +147,14 @@ Licensed under the MIT license. See License.txt in the project root. -->
             <dependency>
               <groupId>org.codehaus.groovy</groupId>
               <artifactId>groovy-ant</artifactId>
-              <version>2.4.5</version>
+              <version>3.0.9</version>
             </dependency>
           </dependencies>
         </plugin>
         <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.5</version>
+          <version>1.6.12</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -311,7 +301,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy</artifactId>
-        <version>2.4.5</version>
+        <version>3.0.9</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

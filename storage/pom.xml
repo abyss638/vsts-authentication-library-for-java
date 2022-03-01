@@ -101,12 +101,11 @@ Licensed under the MIT license. See License.txt in the project root. -->
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.5</version>
         <executions>
           <execution>
             <id>gmavenplus-test</id>
             <goals>
-              <goal>testCompile</goal>
+              <goal>compileTests</goal>
             </goals>
           </execution>
           <execution>
@@ -135,7 +134,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
           <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-ant</artifactId>
-            <version>2.4.5</version>
+            <version>3.0.9</version>
           </dependency>
         </dependencies>
       </plugin>
@@ -213,7 +212,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy</artifactId>
-      <version>2.4.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
