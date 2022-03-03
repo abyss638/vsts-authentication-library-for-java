@@ -16,7 +16,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
   <url>https://java.visualstudio.com/</url>
 
   <properties>
-    <jna.version>4.2.1</jna.version>
+    <jna.version>5.9.0</jna.version>
   </properties>
 
   <build>
