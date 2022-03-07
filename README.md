@@ -56,9 +56,9 @@ Here is a [Sample App](sample/src/main/java/com/microsoft/alm/auth/sample/App.ja
 
 How to build
 ------------
-1. Oracle JDK 8
-1. Maven 3.2+
-1. `mvn clean verify`
+1. JDK 11
+2. Maven 3.8+
+3. `mvn clean verify`
 
 
 How can I contribute?
