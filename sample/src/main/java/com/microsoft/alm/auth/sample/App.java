@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class App {
-    private static final String ACCESSION_CREDENTIALS = "TestCredentials";
+    private static final String CREDENTIALS_KEY = "TestCredentials";
     private static final BufferedReader INPUT = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
@@ -21,7 +21,7 @@ public class App {
         final SecretStore<Credential> credentialStorage = StorageProvider.getCredentialStorage(true, SecureOption.MUST);
 
         // Get token name from the user
-        String credentialName = getCredentialName(ACCESSION_CREDENTIALS);
+        String credentialName = getCredentialName(CREDENTIALS_KEY);
 
         // Retrieve the existing credential from the store
         Credential storedCredential = credentialStorage.get(credentialName);
