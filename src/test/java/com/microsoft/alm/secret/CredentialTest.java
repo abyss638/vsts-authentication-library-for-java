@@ -13,8 +13,6 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class CredentialTest {
 
@@ -45,16 +43,5 @@ public class CredentialTest {
 
         Assert.assertEquals(credential.Username, actualCredential.Username);
         Assert.assertEquals(credential.Password, actualCredential.Password);
-    }
-
-    @Test
-    public void contributeHeader() throws Exception {
-        final Credential credential = new Credential("douglas.adams", "42");
-        final Map<String, String> headers = new LinkedHashMap<String, String>();
-
-        credential.contributeHeader(headers);
-
-        final String actual = headers.get("Authorization");
-        Assert.assertEquals("Basic ZG91Z2xhcy5hZGFtczo0Mg==", actual);
     }
 }

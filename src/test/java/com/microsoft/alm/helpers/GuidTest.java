@@ -120,8 +120,8 @@ public class GuidTest {
             final String template = "Arrays were different.\n" +
                     "Expected :%1$s\n" +
                     "Actual   :%2$s";
-            final String expectedHex = BitConverter.toString(expected);
-            final String actualHex = BitConverter.toString(actual);
+            final String expectedHex = Arrays.toString(expected);
+            final String actualHex = Arrays.toString(actual);
             final String message = String.format(template, expectedHex, actualHex);
             Assert.fail(message);
         }
