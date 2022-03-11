@@ -7,15 +7,12 @@ import com.microsoft.alm.helpers.Debug;
 import com.microsoft.alm.helpers.Guid;
 import com.microsoft.alm.helpers.StringHelper;
 import com.microsoft.alm.helpers.XmlHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import java.nio.ByteBuffer;
 import java.util.EnumSet;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
@@ -24,11 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
  * A security token, usually acquired by some authentication and identity services.
  */
 public class Token extends Secret {
-
-    private static final Logger logger = LoggerFactory.getLogger(Token.class);
-
-    private static final int sizeofTokenType = 4;
-    private static final int sizeofGuid = 16;
 
     public static boolean getFriendlyNameFromType(final TokenType type, final AtomicReference<String> name) {
         // PORT NOTE: Java doesn't have the concept of out-of-range enums
@@ -187,78 +179,6 @@ public class Token extends Secret {
             return value.get();
         else
             return super.toString();
-    }
-
-    static boolean deserialize(final byte[] bytes, final TokenType type, final AtomicReference<Token> tokenReference) {
-        Debug.Assert(bytes != null, "The bytes parameter is null");
-        Debug.Assert(bytes.length > 0, "The bytes parameter is too short");
-        Debug.Assert(type != null, "The type parameter is invalid");
-
-        tokenReference.set(null);
-
-        try {
-            final int preamble = sizeofTokenType + sizeofGuid;
-
-            if (bytes.length > preamble) {
-                TokenType readType;
-                UUID targetIdentity;
-
-                final ByteBuffer p = ByteBuffer.wrap(bytes); // PORT NOTE: ByteBuffer is closest to "fixed"
-                {
-                    readType = TokenType.fromValue(Integer.reverseBytes(p.getInt()));
-                    byte[] guidBytes = new byte[16];
-                    p.get(guidBytes);
-                    targetIdentity = Guid.fromBytes(guidBytes);
-                }
-
-                if (readType == type) {
-                    final String value = StringHelper.UTF8GetString(bytes, preamble, bytes.length - preamble);
-
-                    if (!StringHelper.isNullOrWhiteSpace(value)) {
-                        tokenReference.set(new Token(value, type));
-                        tokenReference.get().targetIdentity = targetIdentity;
-                    }
-                }
-            }
-
-            // if value hasn't been set yet, fall back to old format decode
-            if (tokenReference.get() == null) {
-                final String value = StringHelper.UTF8GetString(bytes);
-
-                if (!StringHelper.isNullOrWhiteSpace(value)) {
-                    tokenReference.set(new Token(value, type));
-                }
-            }
-        } catch (final Throwable throwable) {
-            logger.debug("   token deserialization error");
-        }
-
-        return tokenReference.get() != null;
-    }
-
-    static boolean serialize(final Token token, final AtomicReference<byte[]> byteReference) {
-        Debug.Assert(token != null, "The token parameter is null");
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(token.Value), "The token.Value is invalid");
-
-        byteReference.set(null);
-
-        try {
-            final byte[] utf8bytes = StringHelper.UTF8GetBytes(token.Value);
-            final ByteBuffer bytes = ByteBuffer.allocate(utf8bytes.length + sizeofTokenType + sizeofGuid);
-
-            // PORT NOTE: "fixed" block pointer arithmetic and casting avoided
-            {
-                bytes.putInt(Integer.reverseBytes(token.Type.getValue()));
-                bytes.put(Guid.toBytes(token.targetIdentity));
-            }
-
-            bytes.put(utf8bytes);
-            byteReference.set(bytes.array());
-        } catch (final Throwable t) {
-            logger.debug("   token serialization error");
-        }
-
-        return byteReference.get() != null;
     }
 
     public static void validate(final Token token) {
