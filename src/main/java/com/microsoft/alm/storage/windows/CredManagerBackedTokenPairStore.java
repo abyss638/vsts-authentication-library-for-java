@@ -8,7 +8,7 @@ import com.microsoft.alm.storage.windows.internal.CredManagerBackedSecureStore;
 
 public class CredManagerBackedTokenPairStore extends CredManagerBackedSecureStore<TokenPair> {
 
-    public static final String TOKEN_PAIR_USERNAME = "Azure Active Directory Access and Refresh Token";
+    public static final String TOKEN_PAIR_USERNAME = "Access and Refresh Token";
     @Override
     protected TokenPair create(final String username, final String secret) {
         return new TokenPair("", secret);

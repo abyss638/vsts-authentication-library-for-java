@@ -9,13 +9,13 @@ import java.util.Map;
 public enum TokenType {
     Unknown(null, 0),
     /**
-     * Azure Directory Access Token
+     * Access Token
      */
-    Access("Azure Directory Access Token", 1),
+    Access("Access Token", 1),
     /**
-     * Azure Directory Refresh Token
+     * Refresh Token
      */
-    Refresh("Azure Directory Refresh Token", 2),
+    Refresh("Refresh Token", 2),
     /**
      * Personal Access Token, can be compact or not.
      */
@@ -41,7 +41,7 @@ public enum TokenType {
     private final String description;
     private final int value;
 
-    private TokenType(final String description, final int value) {
+    TokenType(final String description, final int value) {
         this.description = description;
         this.value = value;
     }
