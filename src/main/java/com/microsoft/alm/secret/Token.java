@@ -5,7 +5,6 @@ package com.microsoft.alm.secret;
 
 import com.microsoft.alm.helpers.Debug;
 import com.microsoft.alm.helpers.Guid;
-import com.microsoft.alm.helpers.NotImplementedException;
 import com.microsoft.alm.helpers.StringHelper;
 import com.microsoft.alm.helpers.XmlHelper;
 import org.slf4j.Logger;
@@ -16,10 +15,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import javax.xml.bind.DatatypeConverter;
 import java.nio.ByteBuffer;
 import java.util.EnumSet;
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -192,27 +189,6 @@ public class Token extends Secret {
             return super.toString();
     }
 
-    public void contributeHeader(final Map<String, String> headers) {
-        // different types of tokens are packed differently
-        switch (Type) {
-            case Access:
-                final String prefix = "Bearer";
-                headers.put("Authorization", prefix + " " + Value);
-                break;
-            case Personal:
-                final byte[] authData = StringHelper.UTF8GetBytes("PersonalAccessToken:" + Value);
-                final String base64EncodedAuthData = DatatypeConverter.printBase64Binary(authData);
-                headers.put("Authorization", "Basic " + base64EncodedAuthData);
-                break;
-            case Federated:
-                throw new NotImplementedException(449222);
-            default:
-                final String template = "Tokens of type '%1$s' cannot be used for headers.";
-                final String message = String.format(template, Type);
-                throw new IllegalStateException(message);
-        }
-    }
-
     static boolean deserialize(final byte[] bytes, final TokenType type, final AtomicReference<Token> tokenReference) {
         Debug.Assert(bytes != null, "The bytes parameter is null");
         Debug.Assert(bytes.length > 0, "The bytes parameter is too short");
@@ -340,6 +316,4 @@ public class Token extends Secret {
     public static boolean operatorNotEquals(final Token token1, final Token token2) {
         return !operatorEquals(token1, token2);
     }
-
-
 }

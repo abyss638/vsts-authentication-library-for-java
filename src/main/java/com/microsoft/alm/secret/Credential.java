@@ -12,20 +12,12 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
-import javax.xml.bind.DatatypeConverter;
-import java.nio.charset.Charset;
-import java.util.Map;
-
 /**
  * Credential for user authentication.
  */
 public final class Credential extends Secret {
     public static final int USERNAME_MAX_LENGTH = 511;
     public static final int PASSWORD_MAX_LENGTH = 2047;
-
-    private static final Charset ASCII = Charset.forName("ASCII");
-
-    public static final Credential Empty = new Credential(StringHelper.Empty, StringHelper.Empty);
 
     /**
      * Creates a credential object with a username and password pair.
@@ -116,14 +108,6 @@ public final class Credential extends Secret {
         {
             return Username.hashCode() + 7 * Password.hashCode();
         }
-    }
-
-    public void contributeHeader(final Map<String, String> headers) {
-        // credentials are packed into the 'Authorization' header as a base64 encoded pair
-        final String credPair = Username + ":" + Password;
-        final byte[] credBytes = credPair.getBytes(ASCII);
-        final String base64enc = DatatypeConverter.printBase64Binary(credBytes);
-        headers.put("Authorization", "Basic" + " " + base64enc);
     }
 
     public static void validate(final Credential credentials) {
