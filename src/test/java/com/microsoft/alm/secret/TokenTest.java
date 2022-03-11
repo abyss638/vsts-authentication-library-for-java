@@ -3,7 +3,6 @@
 
 package com.microsoft.alm.secret;
 
-import com.microsoft.alm.helpers.BitConverter;
 import com.microsoft.alm.helpers.Guid;
 import com.microsoft.alm.helpers.StringHelperTest;
 import com.microsoft.alm.helpers.XmlHelper;
