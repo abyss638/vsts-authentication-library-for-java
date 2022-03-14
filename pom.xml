@@ -8,8 +8,8 @@ Licensed under the MIT license. See License.txt in the project root. -->
   <version>1.0.0</version>
   <packaging>jar</packaging>
 
-  <name></name>
-  <description></description>
+  <name>Secure storage for storing credentials or tokens.</name>
+  <description>Unified platform-independent interface to store secrets in credential managers provided by OS (Windows, macOS, Linux).</description>
 
   <licenses>
     <license>
@@ -31,12 +31,18 @@ Licensed under the MIT license. See License.txt in the project root. -->
       <organization>Microsoft</organization>
       <organizationUrl>http://www.microsoft.com/</organizationUrl>
     </developer>
+    <developer>
+      <name>Simon Abykov</name>
+      <email>simonabykov@microsoft.com</email>
+      <organization>Microsoft</organization>
+      <organizationUrl>http://www.microsoft.com/</organizationUrl>
+    </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:https://github.com/Microsoft/vsts-authentication-library-for-java.git</connection>
-    <developerConnection>scm:git:https://github.com/Microsoft/vsts-authentication-library-for-java.git</developerConnection>
-    <url>https://github.com/Microsoft/vsts-authentication-library-for-java</url>
+    <connection>scm:git:https://github.com/Microsoft/credential-secure-storage-for-java.git</connection>
+    <developerConnection>scm:git:https://github.com/Microsoft/credential-secure-storage-for-java.git</developerConnection>
+    <url>https://github.com/Microsoft/credential-secure-storage-for-java</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -56,10 +62,8 @@ Licensed under the MIT license. See License.txt in the project root. -->
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <slf4j.version>1.7.36</slf4j.version>
     <oauth2.useragent.version>0.11.3</oauth2.useragent.version>
-    <jackson.version>2.13.1</jackson.version>
     <jna.version>5.9.0</jna.version>
     <junit.version>4.13.2</junit.version>
-    <mockito-core.version>4.3.1</mockito-core.version>
   </properties>
 
   <build>
@@ -128,26 +132,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
           <version>3.0.1</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.gmavenplus</groupId>
-          <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.13.1</version>
-          <executions>
-            <execution>
-              <id>gmavenplus-test</id>
-              <goals>
-                <goal>compileTests</goal>
-              </goals>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.groovy</groupId>
-              <artifactId>groovy-ant</artifactId>
-              <version>3.0.9</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
           <version>1.6.12</version>
@@ -197,46 +181,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
             <algorithm>SHA-256</algorithm>
           </algorithms>
         </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>gmavenplus-test</id>
-            <goals>
-              <goal>compileTests</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>gmavenplus-verify</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-            <configuration>
-              <!-- http://stackoverflow.com/a/9339405 -->
-              <properties>
-                <shaded_jar_checksum_file>${project.artifactId}-${project.version}.jar.sha256</shaded_jar_checksum_file>
-              </properties>
-              <scripts>
-                <script><![CDATA[
-            final String targetDir = project.build.directory;
-            final String shadedJarChecksumFile = shaded_jar_checksum_file;
-            final File checksumFile = new File(targetDir, shadedJarChecksumFile);
-            final String checksum = checksumFile.getText();
-            ]]></script>
-              </scripts>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-ant</artifactId>
-            <version>3.0.9</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -335,11 +279,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
 
     <dependency>
       <groupId>net.java.dev.jna</groupId>
-      <artifactId>jna</artifactId>
-      <version>${jna.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.java.dev.jna</groupId>
       <artifactId>jna-platform</artifactId>
       <version>${jna.version}</version>
     </dependency>
@@ -361,12 +300,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-core</artifactId>
-      <version>${mockito-core.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
