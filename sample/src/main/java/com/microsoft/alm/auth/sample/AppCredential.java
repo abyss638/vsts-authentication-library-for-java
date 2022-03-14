@@ -12,7 +12,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class App {
+public class AppCredential {
     private static final String CREDENTIALS_KEY = "TestCredentials";
     private static final BufferedReader INPUT = new BufferedReader(new InputStreamReader(System.in));
 
@@ -20,8 +20,8 @@ public class App {
         // Get a secure store instance
         final SecretStore<Credential> credentialStorage = StorageProvider.getCredentialStorage(true, SecureOption.MUST);
 
-        // Get token name from the user
-        String credentialName = getCredentialName(CREDENTIALS_KEY);
+        // Get credentials name from the user
+        String credentialName = getCredentialName();
 
         // Retrieve the existing credential from the store
         Credential storedCredential = credentialStorage.get(credentialName);
@@ -37,16 +37,17 @@ public class App {
         // Save the credential to the store
         credentialStorage.add(credentialName, credential);
 
-        System.out.println("Added/Updated credentials to Credential Manager under the key: " + credentialName);
+        System.out.println("Added/Updated credentials under the key: " + credentialName);
         System.out.println();
 
         // Retrieve the credential from the store
         Credential newStoredCredential = credentialStorage.get(credentialName);
 
-        System.out.println("Retrieved the updated token from Credential Manager using the key: " + credentialName);
+        System.out.println("Retrieved the updated credentials using the key: " + credentialName);
         printCredential(credentialName, newStoredCredential);
 
-        System.out.println("Remove the token from Credential Manager under the key " + credentialName + " [Y/n]?");
+        // Remove credentials from the store
+        System.out.println("Remove the credentials under the key " + credentialName + " [Y/n]?");
         if (!"n".equalsIgnoreCase(INPUT.readLine())) {
             credentialStorage.delete(credentialName);
         }
@@ -54,7 +55,7 @@ public class App {
 
     private static void printCredential(String credentialName, Credential storedCredential) {
         if (storedCredential != null) {
-            System.out.println("Retrieved current credentials from Credential Manager using the key: " + credentialName);
+            System.out.println("Retrieved the existing credentials using the key: " + credentialName);
             System.out.println("  Username: " + storedCredential.Username);
             System.out.println("  Password: " + storedCredential.Password);
         } else {
@@ -63,10 +64,10 @@ public class App {
         System.out.println();
     }
 
-    private static String getCredentialName(String defaultCredentialName) throws IOException {
-        System.out.print("Enter token name [" + defaultCredentialName + "]: ");
-        String tokenName = INPUT.readLine();
-        if (tokenName == null || tokenName.isEmpty()) tokenName = defaultCredentialName;
-        return tokenName;
+    private static String getCredentialName() throws IOException {
+        System.out.print("Enter credentials name [" + CREDENTIALS_KEY + "]: ");
+        String credentialsName = INPUT.readLine();
+        if (credentialsName == null || credentialsName.isEmpty()) credentialsName = CREDENTIALS_KEY;
+        return credentialsName;
     }
 }
