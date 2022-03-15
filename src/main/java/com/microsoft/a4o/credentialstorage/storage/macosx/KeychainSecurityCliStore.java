@@ -3,20 +3,18 @@
 
 package com.microsoft.a4o.credentialstorage.storage.macosx;
 
-
 import com.microsoft.a4o.credentialstorage.helpers.Func;
 import com.microsoft.a4o.credentialstorage.helpers.IOHelper;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
 import com.microsoft.a4o.credentialstorage.secret.Token;
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
-import com.microsoft.alm.oauth2.useragent.subprocess.DefaultProcessFactory;
-import com.microsoft.alm.oauth2.useragent.subprocess.ProcessCoordinator;
-import com.microsoft.alm.oauth2.useragent.subprocess.TestableProcess;
-import com.microsoft.alm.oauth2.useragent.subprocess.TestableProcessFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,14 +24,14 @@ import java.util.regex.Pattern;
 
 class KeychainSecurityCliStore {
 
-    static final String SECURITY = "/usr/bin/security";
-    static final String DELETE_GENERIC_PASSWORD = "delete-generic-password";
-    static final String FIND_GENERIC_PASSWORD = "find-generic-password";
-    static final String ADD_GENERIC_PASSWORD = "add-generic-password";
-    static final String SHOW_KEYCHAIN_INFO = "show-keychain-info";
-    static final String ACCOUNT_PARAMETER = "-a";
-    static final String ACCOUNT_METADATA = "acct";
-    static final String PASSWORD = "password";
+    private static final String SECURITY = "/usr/bin/security";
+    private static final String DELETE_GENERIC_PASSWORD = "delete-generic-password";
+    private static final String FIND_GENERIC_PASSWORD = "find-generic-password";
+    private static final String ADD_GENERIC_PASSWORD = "add-generic-password";
+    private static final String SHOW_KEYCHAIN_INFO = "show-keychain-info";
+    private static final String ACCOUNT_PARAMETER = "-a";
+    private static final String ACCOUNT_METADATA = "acct";
+    private static final String PASSWORD = "password";
     private static final String SERVICE_PARAMETER = "-s";
     private static final String KIND_PARAMETER = "-D";
     private static final String PASSWORD_PARAMETER = "-w";
@@ -42,59 +40,62 @@ class KeychainSecurityCliStore {
     private static final int USER_INTERACTION_NOT_ALLOWED_EXIT_CODE = 36;
     private static final String INTERACTIVE_MODE = "-i";
 
-    protected boolean deleteByKind(final String targetName, final SecretKind kind) {
-        try {
-            final TestableProcess process = processFactory.create(
-                    SECURITY,
-                    DELETE_GENERIC_PASSWORD,
-                    SERVICE_PARAMETER, targetName,
-                    KIND_PARAMETER, kind.name()
+    private static final Func<String, String> QUOTING_PROCESSOR = str -> str.contains(" ") ? '"' + str + '"' : str;
+
+    private static final Pattern MetadataLinePattern = Pattern.compile
+            (
+                    //   ^(\w+):\s"(.+)"
+                    "^(\\w+):\\s\"(.+)\""
             );
-            // we don't care about the exit code
-            process.waitFor();
-
-            return true;
-        } catch (final IOException e) {
-            throw new Error(e);
-        } catch (final InterruptedException e) {
-            throw new Error(e);
-        }
-    }
-
-    private static final Func<String, String> QUOTING_PROCESSOR = new Func<String, String>() {
-        @Override
-        public String call(final String s) {
-            if (s.contains(" ")) {
-                return '"' + s + '"';
-            }
-            return s;
-        }
-    };
 
     enum SecretKind {
         Credential,
         Token,
         TokenPair_Access_Token,
-        TokenPair_Refresh_Token;
+        TokenPair_Refresh_Token
     }
 
-    private final TestableProcessFactory processFactory;
-
-    public KeychainSecurityCliStore() {
-        this(new DefaultProcessFactory());
+    enum AttributeParsingState {
+        Spaces,
+        StringKey,
+        HexKey,
+        BeforeType,
+        Type,
+        AfterType,
+        BeforeValue,
+        NullValue,
+        StringValue,
+        TimeDateValue,
+        ValueFinished
     }
 
-    KeychainSecurityCliStore(final TestableProcessFactory processFactory) {
-        this.processFactory = processFactory;
+    protected boolean deleteByKind(final String targetName, final SecretKind kind) {
+        try {
+            final ProcessBuilder processBuilder = new ProcessBuilder(
+                    SECURITY,
+                    DELETE_GENERIC_PASSWORD,
+                    SERVICE_PARAMETER, targetName,
+                    KIND_PARAMETER, kind.name()
+            );
+
+            final Process process = processBuilder.start();
+
+            // we don't care about the exit code
+            process.waitFor();
+
+            return true;
+        } catch (final IOException | InterruptedException e) {
+            throw new Error(e);
+        }
     }
 
-    static Map<String, Object> parseKeychainMetaData(final String metadata) {
-        final Map<String, Object> result = new HashMap<String, Object>();
+    private static Map<String, Object> parseKeychainMetaData(final String metadata) {
+        final Map<String, Object> result = new HashMap<>();
         parseKeychainMetaData(metadata, result);
         return result;
     }
 
-    static void parseKeychainMetaData(final String metadata, final Map<String, Object> result) {
+    private static void parseKeychainMetaData(final String metadata, final Map<String, Object> result) {
         final StringReader sr = new StringReader(metadata);
         final BufferedReader br = new BufferedReader(sr);
         boolean parsingAttributes = false;
@@ -118,13 +119,7 @@ class KeychainSecurityCliStore {
         }
     }
 
-    private static final Pattern MetadataLinePattern = Pattern.compile
-        (
-            //   ^(\w+):\s"(.+)"
-            "^(\\w+):\\s\"(.+)\""
-        );
-
-    static void parseMetadataLine(final String line, final Map<String, Object> destination) {
+    private static void parseMetadataLine(final String line, final Map<String, Object> destination) {
         final Matcher matcher = MetadataLinePattern.matcher(line);
         if (matcher.matches()) {
             final String key = matcher.group(1);
@@ -133,21 +128,7 @@ class KeychainSecurityCliStore {
         }
     }
 
-    enum AttributeParsingState {
-        Spaces,
-        StringKey,
-        HexKey,
-        BeforeType,
-        Type,
-        AfterType,
-        BeforeValue,
-        NullValue,
-        StringValue,
-        TimeDateValue,
-        ValueFinished,;
-    }
-
-    static void parseAttributeLine(final String line, final Map<String, Object> destination) {
+    private static void parseAttributeLine(final String line, final Map<String, Object> destination) {
         final String template = "Undefined transition '%1$s' from %2$s.";
         final StringBuilder key = new StringBuilder();
         final StringBuilder type = new StringBuilder();
@@ -200,41 +181,31 @@ class KeychainSecurityCliStore {
                     }
                     break;
                 case StringKey:
-                    switch (c) {
-                        case '"':
-                            state = AttributeParsingState.BeforeType;
-                            break;
-                        default:
-                            key.append(c);
-                            break;
+                    if (c == '"') {
+                        state = AttributeParsingState.BeforeType;
+                    } else {
+                        key.append(c);
                     }
                     break;
                 case BeforeType:
-                    switch (c) {
-                        case '<':
-                            state = AttributeParsingState.Type;
-                            break;
-                        default:
-                            throw new Error(String.format(template, c, state));
+                    if (c == '<') {
+                        state = AttributeParsingState.Type;
+                    } else {
+                        throw new Error(String.format(template, c, state));
                     }
                     break;
                 case Type:
-                    switch (c) {
-                        case '>':
-                            state = AttributeParsingState.AfterType;
-                            break;
-                        default:
-                            type.append(c);
-                            break;
+                    if (c == '>') {
+                        state = AttributeParsingState.AfterType;
+                    } else {
+                        type.append(c);
                     }
                     break;
                 case AfterType:
-                    switch (c) {
-                        case '=':
-                            state = AttributeParsingState.BeforeValue;
-                            break;
-                        default:
-                            throw new Error(String.format(template, c, state));
+                    if (c == '=') {
+                        state = AttributeParsingState.BeforeValue;
+                    } else {
+                        throw new Error(String.format(template, c, state));
                     }
                     break;
                 case BeforeValue:
@@ -298,18 +269,16 @@ class KeychainSecurityCliStore {
     public boolean isKeychainAvailable() {
         final String stdOut, stdErr;
         try {
-            final TestableProcess process = processFactory.create(
+            final ProcessBuilder processBuilder = new ProcessBuilder(
                 SECURITY,
                 SHOW_KEYCHAIN_INFO
             );
-            final ProcessCoordinator coordinator = new ProcessCoordinator(process);
-            final int result = coordinator.waitFor();
-            stdOut = coordinator.getStdOut();
-            stdErr = coordinator.getStdErr();
+            final Process process = processBuilder.start();
+            final int result = process.waitFor();
+            stdOut = readStream(process.getInputStream());
+            stdErr = readStream(process.getErrorStream());
             checkResult(result, stdOut, stdErr);
-        } catch (final IOException e) {
-            throw new Error(e);
-        } catch (final InterruptedException e) {
+        } catch (final IOException | InterruptedException e) {
             throw new Error(e);
         } catch (final SecurityException e) {
             return false;
@@ -317,9 +286,7 @@ class KeychainSecurityCliStore {
         return true;
     }
 
-
-
-    static void checkResult(final int result, final String stdOut, final String stdErr) {
+    private static void checkResult(final int result, final String stdOut, final String stdErr) {
         if (result != 0) {
             if (result == USER_INTERACTION_NOT_ALLOWED_EXIT_CODE) {
                 throw new SecurityException("User interaction is not allowed.");
@@ -331,26 +298,26 @@ class KeychainSecurityCliStore {
         }
     }
 
-    static Map<String, Object> read(final SecretKind secretKind, final TestableProcessFactory processFactory, final String serviceName) {
+    private static Map<String, Object> read(final SecretKind secretKind, final String serviceName) {
         final String stdOut, stdErr;
         try {
-            final TestableProcess process = processFactory.create(
+            final ProcessBuilder processBuilder = new ProcessBuilder(
                 SECURITY,
                 FIND_GENERIC_PASSWORD,
                 SERVICE_PARAMETER, serviceName,
                 KIND_PARAMETER, secretKind.name(),
                 "-g" // "Display the password for the item found"
             );
-            final ProcessCoordinator coordinator = new ProcessCoordinator(process);
-            final int result = coordinator.waitFor();
-            stdOut = coordinator.getStdOut();
-            stdErr = coordinator.getStdErr();
+
+            final Process process = processBuilder.start();
+
+            final int result = process.waitFor();
+            stdOut = readStream(process.getInputStream());
+            stdErr = readStream(process.getErrorStream());
             if (result != 0 && result != ITEM_NOT_FOUND_EXIT_CODE) {
                 checkResult(result, stdOut, stdErr);
             }
-        } catch (final IOException e) {
-            throw new Error(e);
-        } catch (final InterruptedException e) {
+        } catch (final IOException | InterruptedException e) {
             throw new Error(e);
         }
 
@@ -361,7 +328,7 @@ class KeychainSecurityCliStore {
     }
 
     public Credential readCredentials(final String targetName) {
-        final Map<String, Object> metaData = read(SecretKind.Credential, processFactory, targetName);
+        final Map<String, Object> metaData = read(SecretKind.Credential, targetName);
 
         final Credential result;
         if (metaData.size() > 0) {
@@ -377,7 +344,7 @@ class KeychainSecurityCliStore {
     }
 
     public Token readToken(final String targetName) {
-        final Map<String, Object> metaData = read(SecretKind.Token, processFactory, targetName);
+        final Map<String, Object> metaData = read(SecretKind.Token, targetName);
 
         final Token result;
         if (metaData.size() > 0) {
@@ -395,20 +362,18 @@ class KeychainSecurityCliStore {
     public TokenPair readTokenPair(final String targetName) {
         String accessToken, refreshToken;
 
-        final Map<String, Object> accessTokenMetaData = read(SecretKind.TokenPair_Access_Token, processFactory, targetName);
+        final Map<String, Object> accessTokenMetaData = read(SecretKind.TokenPair_Access_Token, targetName);
 
         if (accessTokenMetaData.size() > 0) {
-            final String password = (String) accessTokenMetaData.get(PASSWORD);
-            accessToken = password;
+            accessToken = (String) accessTokenMetaData.get(PASSWORD);
         } else {
             accessToken = null;
         }
 
-        final Map<String, Object> refreshTokenMetaData = read(SecretKind.TokenPair_Refresh_Token, processFactory, targetName);
+        final Map<String, Object> refreshTokenMetaData = read(SecretKind.TokenPair_Refresh_Token, targetName);
 
         if (refreshTokenMetaData.size() > 0) {
-            final String password = (String) refreshTokenMetaData.get(PASSWORD);
-            refreshToken = password;
+            refreshToken = (String) refreshTokenMetaData.get(PASSWORD);
         } else {
             refreshToken = null;
         }
@@ -420,10 +385,10 @@ class KeychainSecurityCliStore {
         return null;
     }
 
-    static void write(final SecretKind secretKind, final TestableProcessFactory processFactory, final String serviceName, final String accountName, final String password) {
+    private static void write(final SecretKind secretKind, final String serviceName, final String accountName, final String password) {
         final String stdOut, stdErr;
         try {
-            final TestableProcess addProcess = processFactory.create(
+            final ProcessBuilder addProcessBuilder = new ProcessBuilder(
                 SECURITY,
                 INTERACTIVE_MODE
             );
@@ -435,22 +400,23 @@ class KeychainSecurityCliStore {
                 PASSWORD_PARAMETER, password,
                 KIND_PARAMETER, secretKind.name()
             };
-            final ProcessCoordinator coordinator = new ProcessCoordinator(addProcess);
+            final Process process = addProcessBuilder.start();
             final String command = StringHelper.join(" ", commandParts, 0, commandParts.length, QUOTING_PROCESSOR);
-            coordinator.println(command);
-            final int result = coordinator.waitFor();
-            stdOut = coordinator.getStdOut();
-            stdErr = coordinator.getStdErr();
+
+            final PrintWriter writer = new PrintWriter(process.getOutputStream());
+            writer.println(command);
+
+            final int result = process.waitFor();
+            stdOut = readStream(process.getInputStream());
+            stdErr = readStream(process.getErrorStream());
             checkResult(result, stdOut, stdErr);
-        } catch (final IOException e) {
-            throw new Error(e);
-        } catch (final InterruptedException e) {
+        } catch (final IOException | InterruptedException e) {
             throw new Error(e);
         }
     }
 
     public void writeCredential(final String targetName, final Credential credentials) {
-        write(SecretKind.Credential, processFactory, targetName, credentials.Username, credentials.Password);
+        write(SecretKind.Credential, targetName, credentials.Username, credentials.Password);
     }
 
     public void writeToken(final String targetName, final Token token) {
@@ -458,10 +424,10 @@ class KeychainSecurityCliStore {
     }
 
     private void writeTokenKind(final String targetName, final SecretKind secretKind, final Token token) {
-        final AtomicReference<String> accountNameReference = new AtomicReference<String>();
+        final AtomicReference<String> accountNameReference = new AtomicReference<>();
         Token.getFriendlyNameFromType(token.Type, accountNameReference);
         final String accountName = accountNameReference.get();
-        write(secretKind, processFactory, targetName, accountName, token.Value);
+        write(secretKind, targetName, accountName, token.Value);
     }
 
     public void writeTokenPair(final String targetName, final TokenPair tokenPair) {
@@ -472,5 +438,17 @@ class KeychainSecurityCliStore {
         if (tokenPair.RefreshToken.Value != null) {
             writeTokenKind(targetName, SecretKind.TokenPair_Refresh_Token, tokenPair.RefreshToken);
         }
+    }
+
+    private static String readStream(final InputStream inputStream) throws IOException {
+        final StringBuilder contents = new StringBuilder();
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                contents.append(line)
+                        .append(System.lineSeparator());
+            }
+        }
+        return contents.toString();
     }
 }

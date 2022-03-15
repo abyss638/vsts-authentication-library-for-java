@@ -61,7 +61,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <slf4j.version>1.7.36</slf4j.version>
-    <oauth2.useragent.version>0.11.3</oauth2.useragent.version>
     <jna.version>5.9.0</jna.version>
     <junit.version>4.13.2</junit.version>
   </properties>
@@ -271,12 +270,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>com.microsoft.alm</groupId>
-      <artifactId>oauth2-useragent</artifactId>
-      <version>${oauth2.useragent.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>net.java.dev.jna</groupId>
       <artifactId>jna-platform</artifactId>
