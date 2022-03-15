@@ -11,8 +11,7 @@ import com.sun.jna.Native;
  * warning: "g_set_application_name not set"
  */
 public interface GLibLibrary extends Library {
-    GLibLibrary INSTANCE = (GLibLibrary)
-            Native.loadLibrary("glib-2.0", GLibLibrary.class);
+    GLibLibrary INSTANCE = Native.load("glib-2.0", GLibLibrary.class);
 
     void g_set_application_name(final String application_name);
 }

@@ -19,8 +19,7 @@ import java.util.List;
  */
 public interface GnomeKeyringLibrary extends Library {
 
-    GnomeKeyringLibrary INSTANCE = (GnomeKeyringLibrary)
-                Native.loadLibrary("gnome-keyring", GnomeKeyringLibrary.class);
+    GnomeKeyringLibrary INSTANCE = Native.load("gnome-keyring", GnomeKeyringLibrary.class);
 
     /**
      * Save secrets to disk
@@ -92,7 +91,7 @@ public interface GnomeKeyringLibrary extends Library {
     class GnomeKeyringPasswordSchemaAttribute extends Structure {
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("name", "type");
         }
 
@@ -109,7 +108,7 @@ public interface GnomeKeyringLibrary extends Library {
     class GnomeKeyringPasswordSchema extends Structure {
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("item_type", "attributes");
         }
 
@@ -124,7 +123,7 @@ public interface GnomeKeyringLibrary extends Library {
     class PointerToPointer extends Structure {
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Collections.singletonList("pointer");
         }
 

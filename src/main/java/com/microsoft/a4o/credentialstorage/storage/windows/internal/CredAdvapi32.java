@@ -23,8 +23,7 @@ import java.util.List;
  * Please refer to MSDN documentations for each method usage pattern
  */
 interface CredAdvapi32 extends StdCallLibrary {
-    CredAdvapi32 INSTANCE = (CredAdvapi32) Native.loadLibrary("Advapi32",
-            CredAdvapi32.class, W32APIOptions.UNICODE_OPTIONS);
+    CredAdvapi32 INSTANCE = Native.load("Advapi32", CredAdvapi32.class, W32APIOptions.UNICODE_OPTIONS);
     /**
      * CredRead flag
      */
@@ -74,7 +73,7 @@ interface CredAdvapi32 extends StdCallLibrary {
         public static class ByReference extends CREDENTIAL_ATTRIBUTE implements Structure.ByReference { }
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("Keyword",
                     "Flags",
                     "ValueSize",
@@ -110,12 +109,12 @@ interface CredAdvapi32 extends StdCallLibrary {
     }
 
     /**
-     * Pointer to {@See CREDENTIAL_ATTRIBUTE} struct
+     * Pointer to {@see CREDENTIAL_ATTRIBUTE} struct
      */
     class PCREDENTIAL_ATTRIBUTE extends Structure {
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Collections.singletonList("credential_attribute");
         }
 
@@ -297,7 +296,7 @@ interface CredAdvapi32 extends StdCallLibrary {
     class PCREDENTIAL extends Structure {
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Collections.singletonList("credential");
         }
 
