@@ -36,3 +36,4 @@ and [tokens](sample/src/main/java/com/microsoft/a4o/credentialstorage/sample/App
 
 # License
 The MIT license can be found in [LICENSE.txt](LICENSE.txt)
+See the [NOTICE.txt](NOTICE.txt) file for required notices and attributions.
