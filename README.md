@@ -1,77 +1,50 @@
-# Visual Studio Team Services Authentication Library for Java (Preview) [![Build Status](https://travis-ci.org/Microsoft/vsts-authentication-library-for-java.svg?branch=master)](https://travis-ci.org/Microsoft/vsts-authentication-library-for-java)
-Retrieve OAuth2 Access Token or Personal Accesss Tokens for Visual Studio Team Services (visualstudio.com) accounts.  Also provides secure storage for those secrets on different platforms.
+# Credential Secure Storage for Java 
+Unified interface to store Java application secrets on different platforms.
 
-To learn more about Visual Studio Team Services and our Java specific tools, please visit https://java.visualstudio.com.
-
-What this library provides
---------------------------
-This library provides:
-
-1. a set of `authenticators` in the `core` module that can be used to retrieve credentials in the form of OAuth2 Access Token or Personal Access Token against any Visual Studio Team Services account.  
-1. a set of secure `storage` providers that store retrieved secrets, as well as In memory and File system backed insecure storages.   
-1. a set of `providers` that hide the interaction between `storage` and `authenticator`, and returns authenticated `client` that can be used directly against Visual Studio Team Services REST APIs.
+# What this library provides
+This library provides a set of secure `storage` providers that store retrieved secrets, as well as In memory and File system backed insecure storages.   
 
 ### Available Secure Storage Providers:
+| Secret Type                                    | Windows (Credential Manager) | Linux (GNOME Keyring v2.22+)  | Mac OSX (Keychain)|
+|------------------------------------------------|------------------------------|-------------------------------|-------------------|
+| Username / Password Credentials (`Credential`) | Yes | Yes | Yes |
+| OAuth2 Access/Refresh Token (`TokenPair`)      | Yes (On Windows 7, 8/8.1 and 10) | Yes | Yes | 
+| Personal Access Token (`Token`)                | Yes | Yes | Yes |
 
-| Secret Type | Windows (Credential Manager) | Linux (GNOME Keyring v2.22+)  | Mac OSX (Keychain)|
-|--------------------------|------------------------|-------------------------|-------------------------|
-| Username / Password Combo (`Credential`) | Yes | Yes | Yes |
-| OAuth2 Access/Refresh Token (`TokenPair`) | Yes (On Windows 7, 8/8.1 and 10) | Yes | Yes | 
-| VSTS Personal Access Token (`Token`) | Yes | Yes | Yes |
-
-
-How to use this library
------------------------
-
+# How to use this library
 Maven is the preferred way to referencing this library.  
 
 ```xml
   <dependency>
-    <groupId>com.microsoft.alm</groupId>
-    <artifactId>auth-providers</artifactId>
-    <version>0.6.4</version>
+    <groupId>com.microsoft.a4o</groupId>
+    <artifactId>credential-storage</artifactId>
+    <version>1.0.0</version>
   </dependency>
 ```
 
-If only interested in specific modules:
-
-```xml
-  <dependency>
-    <groupId>com.microsoft.alm</groupId>
-    <artifactId>auth-secure-storage</artifactId>
-    <version>0.6.4</version>
-  </dependency>
-```
-
-```xml
-  <dependency>
-    <groupId>com.microsoft.alm</groupId>
-    <artifactId>auth-core</artifactId>
-    <version>0.6.4</version>
-  </dependency>
-```
-
-Here is a [Sample App](sample/src/main/java/com/microsoft/alm/auth/sample/App.java) that uses this library.
+Here is sample code for [credentials](sample/src/main/java/com/microsoft/a4o/credentialstorage/sample/AppCredential.java) 
+and [tokens](sample/src/main/java/com/microsoft/a4o/credentialstorage/sample/AppToken.java) that shows how to use this library.
 
 
-How to build
-------------
+# How to build
 1. JDK 11
 2. Maven 3.8+
 3. `mvn clean verify`
 
-
-How can I contribute?
----------------------
-This is a preview release, please open issues and give us feedback!  We also welcome Pull Requests.
-
-
-License
--------
+# License
 The MIT license can be found in [LICENSE.txt](LICENSE.txt)
 
+# Contributing
+This project welcomes contributions and suggestions. Most contributions require you to
+agree to a Contributor License Agreement (CLA) declaring that you have the right to,
+and actually do, grant us the rights to use your contribution. For details, visit
+https://cla.microsoft.com.
 
-Code of Conduct
----------------
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+When you submit a pull request, a CLA-bot will automatically determine whether you need
+to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the
+instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
 
+# Code of Conduct
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
+For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
+or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.

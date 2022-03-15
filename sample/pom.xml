@@ -4,8 +4,8 @@ Licensed under the MIT license. See License.txt in the project root. -->
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.microsoft.alm</groupId>
-    <artifactId>credential-secure-storage-sample</artifactId>
+    <groupId>com.microsoft.a4o</groupId>
+    <artifactId>credential-storage-sample</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -26,8 +26,8 @@ Licensed under the MIT license. See License.txt in the project root. -->
 
     <dependencies>
         <dependency>
-            <groupId>com.microsoft.alm</groupId>
-            <artifactId>credential-secure-storage</artifactId>
+            <groupId>com.microsoft.a4o</groupId>
+            <artifactId>credential-storage</artifactId>
             <version>1.0.0</version>
         </dependency>
 
