@@ -1,6 +1,9 @@
 # Credential Secure Storage for Java 
 Unified interface to store Java application secrets on different platforms.
 
+The library is derivative work from [Visual Studio Team Services Authentication Library for Java (Preview)](https://github.com/microsoft/vsts-authentication-library-for-java), 
+`auth-secure-storage` module in particular, focusing on secure storage only.  
+
 # What this library provides
 This library provides a set of secure `storage` providers that store retrieved secrets, as well as In memory and File system backed insecure storages.   
 
@@ -33,18 +36,3 @@ and [tokens](sample/src/main/java/com/microsoft/a4o/credentialstorage/sample/App
 
 # License
 The MIT license can be found in [LICENSE.txt](LICENSE.txt)
-
-# Contributing
-This project welcomes contributions and suggestions. Most contributions require you to
-agree to a Contributor License Agreement (CLA) declaring that you have the right to,
-and actually do, grant us the rights to use your contribution. For details, visit
-https://cla.microsoft.com.
-
-When you submit a pull request, a CLA-bot will automatically determine whether you need
-to provide a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the
-instructions provided by the bot. You will only need to do this once across all repositories using our CLA.
-
-# Code of Conduct
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/)
-or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
