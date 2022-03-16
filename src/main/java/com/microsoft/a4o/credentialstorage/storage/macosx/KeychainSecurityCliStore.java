@@ -12,8 +12,6 @@ import com.microsoft.a4o.credentialstorage.secret.TokenPair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -275,8 +273,8 @@ class KeychainSecurityCliStore {
             );
             final Process process = processBuilder.start();
             final int result = process.waitFor();
-            stdOut = readStream(process.getInputStream());
-            stdErr = readStream(process.getErrorStream());
+            stdOut = IOHelper.readToString(process.getInputStream());
+            stdErr = IOHelper.readToString(process.getErrorStream());
             checkResult(result, stdOut, stdErr);
         } catch (final IOException | InterruptedException e) {
             throw new Error(e);
@@ -312,8 +310,8 @@ class KeychainSecurityCliStore {
             final Process process = processBuilder.start();
 
             final int result = process.waitFor();
-            stdOut = readStream(process.getInputStream());
-            stdErr = readStream(process.getErrorStream());
+            stdOut = IOHelper.readToString(process.getInputStream());
+            stdErr = IOHelper.readToString(process.getErrorStream());
             if (result != 0 && result != ITEM_NOT_FOUND_EXIT_CODE) {
                 checkResult(result, stdOut, stdErr);
             }
@@ -407,8 +405,8 @@ class KeychainSecurityCliStore {
             writer.println(command);
 
             final int result = process.waitFor();
-            stdOut = readStream(process.getInputStream());
-            stdErr = readStream(process.getErrorStream());
+            stdOut = IOHelper.readToString(process.getInputStream());
+            stdErr = IOHelper.readToString(process.getErrorStream());
             checkResult(result, stdOut, stdErr);
         } catch (final IOException | InterruptedException e) {
             throw new Error(e);
@@ -438,17 +436,5 @@ class KeychainSecurityCliStore {
         if (tokenPair.RefreshToken.Value != null) {
             writeTokenKind(targetName, SecretKind.TokenPair_Refresh_Token, tokenPair.RefreshToken);
         }
-    }
-
-    private static String readStream(final InputStream inputStream) throws IOException {
-        final StringBuilder contents = new StringBuilder();
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                contents.append(line)
-                        .append(System.lineSeparator());
-            }
-        }
-        return contents.toString();
     }
 }
