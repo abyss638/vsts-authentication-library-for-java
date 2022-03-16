@@ -20,7 +20,7 @@ Maven is the preferred way to referencing this library.
 ```xml
   <dependency>
     <groupId>com.microsoft.a4o</groupId>
-    <artifactId>credential-storage</artifactId>
+    <artifactId>credential-secure-storage</artifactId>
     <version>1.0.0</version>
   </dependency>
 ```

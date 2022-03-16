@@ -5,7 +5,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.microsoft.a4o</groupId>
-    <artifactId>credential-storage-sample</artifactId>
+    <artifactId>credential-secure-storage-sample</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -27,7 +27,7 @@ Licensed under the MIT license. See License.txt in the project root. -->
     <dependencies>
         <dependency>
             <groupId>com.microsoft.a4o</groupId>
-            <artifactId>credential-storage</artifactId>
+            <artifactId>credential-secure-storage</artifactId>
             <version>1.0.0</version>
         </dependency>
 
