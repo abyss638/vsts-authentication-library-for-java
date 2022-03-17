@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.posix.internal;
 
-import com.microsoft.a4o.credentialstorage.helpers.SettingsHelper;
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Secret;
 import com.microsoft.a4o.credentialstorage.storage.SecretStore;
@@ -194,7 +193,7 @@ public abstract class GnomeKeyringBackedSecureStore<E extends Secret> implements
             logger.info("Keyring is locked, most likely due to UI is unavailable or user logged in " +
                     "automatically without supplying a password.");
 
-            final boolean allowUnlock = Boolean.valueOf(SettingsHelper.getInstance().getProperty(ALLOW_UNLOCK_KEYRING));
+            final boolean allowUnlock = Boolean.parseBoolean(System.getProperty(ALLOW_UNLOCK_KEYRING));
             if (allowUnlock) {
                 final int ret = INSTANCE.gnome_keyring_unlock_sync(GnomeKeyringLibrary.GNOME_KEYRING_DEFAULT, null);
                 return checkResult(ret, "Could not unlock keyring. GNOME Keyring is not available.");
