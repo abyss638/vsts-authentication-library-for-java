@@ -3,13 +3,14 @@
 
 package com.microsoft.a4o.credentialstorage.storage.posix.internal;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.SettingsHelper;
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Secret;
 import com.microsoft.a4o.credentialstorage.storage.SecretStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public abstract class GnomeKeyringBackedSecureStore<E extends Secret> implements SecretStore<E> {
 
@@ -51,7 +52,7 @@ public abstract class GnomeKeyringBackedSecureStore<E extends Secret> implements
      */
     @Override
     public E get(final String key) {
-        Debug.Assert(key != null, "key cannot be null");
+        Objects.requireNonNull(key, "key cannot be null");
 
         logger.info("Getting {} for {}", getType(), key);
 
@@ -78,7 +79,7 @@ public abstract class GnomeKeyringBackedSecureStore<E extends Secret> implements
 
     @Override
     public boolean delete(final String key) {
-        Debug.Assert(key != null, "key cannot be null");
+        Objects.requireNonNull(key, "key cannot be null");
         logger.info("Deleting {} for {}", getType(), key);
 
         final int result = INSTANCE.gnome_keyring_delete_password_sync(
@@ -92,8 +93,8 @@ public abstract class GnomeKeyringBackedSecureStore<E extends Secret> implements
 
     @Override
     public boolean add(final String key, E secret) {
-        Debug.Assert(key != null, "key cannot be null");
-        Debug.Assert(secret != null, "Secret cannot be null");
+        Objects.requireNonNull(key, "key cannot be null");
+        Objects.requireNonNull(secret, "Secret cannot be null");
 
         logger.info("Adding a {} for {}", getType(), key);
 

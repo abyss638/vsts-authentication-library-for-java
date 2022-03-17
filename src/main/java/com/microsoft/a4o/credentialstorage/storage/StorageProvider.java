@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
 import com.microsoft.a4o.credentialstorage.secret.Secret;
@@ -24,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class StorageProvider {
 
@@ -83,7 +83,7 @@ public class StorageProvider {
     }
 
     public static SecretStore<Token> getTokenStorage(final boolean persist, final SecureOption secureOption) {
-        Debug.Assert(secureOption != null, "secureOption cannot be null");
+        Objects.requireNonNull(secureOption, "secureOption cannot be null");
 
         logger.info("Getting a {} token store that {} be secure", persist ? "persistent" : "non-persistent",
                 secureOption == SecureOption.MUST ? "must" : "could");
@@ -105,7 +105,7 @@ public class StorageProvider {
     }
 
     public static SecretStore<TokenPair> getTokenPairStorage(final boolean persist, final SecureOption secureOption) {
-        Debug.Assert(secureOption != null, "secureOption cannot be null");
+        Objects.requireNonNull(secureOption, "secureOption cannot be null");
 
         logger.info("Getting a {} tokenPair store that {} be secure", persist ? "persistent" : "non-persistent",
                 secureOption == SecureOption.MUST ? "must" : "could");
@@ -127,7 +127,7 @@ public class StorageProvider {
     }
 
     public static SecretStore<Credential> getCredentialStorage(final boolean persist, final SecureOption secureOption) {
-        Debug.Assert(secureOption != null, "secureOption cannot be null");
+        Objects.requireNonNull(secureOption, "secureOption cannot be null");
 
         logger.info("Getting a {} credential store that {} be secure", persist ? "persistent" : "non-persistent",
                 secureOption == SecureOption.MUST ? "must" : "could");
@@ -177,8 +177,8 @@ public class StorageProvider {
                                                       final SecureOption secureOption,
                                                       final List<SecretStore<E>> stores,
                                                       final NonPersistentStoreGenerator<E> nonPersistentStoreGenerator) {
-        Debug.Assert(nonPersistentStoreGenerator != null, "nonPersistentStoreGenerator cannot be null.");
-        Debug.Assert(stores != null, "stores cannot be null.");
+        Objects.requireNonNull(nonPersistentStoreGenerator, "nonPersistentStoreGenerator cannot be null.");
+        Objects.requireNonNull(stores, "stores cannot be null.");
 
         SecretStore<E> candidate;
         if (persist) {

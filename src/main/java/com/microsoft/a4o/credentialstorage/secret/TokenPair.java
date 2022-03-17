@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.secret;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.PropertyBag;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
@@ -33,8 +32,12 @@ public class TokenPair extends Secret {
      * @param refreshToken The base64 encoded value of the refresh token's raw data
      */
     public TokenPair(final String accessToken, final String refreshToken) {
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(accessToken), "The accessToken parameter is null or invalid.");
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(refreshToken), "The refreshToken parameter is null or invalid.");
+        if (StringHelper.isNullOrWhiteSpace(accessToken)) {
+            throw new IllegalArgumentException("The accessToken parameter is null or invalid.");
+        }
+        if (StringHelper.isNullOrWhiteSpace(refreshToken)) {
+            throw new IllegalArgumentException("The refreshToken parameter is null or invalid.");
+        }
 
         this.AccessToken = new Token(accessToken, TokenType.Access);
         this.RefreshToken = new Token(refreshToken, TokenType.Refresh);

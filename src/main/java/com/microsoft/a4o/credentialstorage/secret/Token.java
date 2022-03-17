@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.secret;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.Guid;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
@@ -35,7 +34,9 @@ public class Token extends Secret {
     }
 
     public static boolean getTypeFromFriendlyName(final String name, final AtomicReference<TokenType> type) {
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(name), "The name parameter is null or invalid");
+        if (StringHelper.isNullOrWhiteSpace(name)) {
+            throw new IllegalArgumentException("The name parameter is null or invalid");
+        }
 
         type.set(TokenType.Unknown);
 
@@ -53,7 +54,9 @@ public class Token extends Secret {
     }
 
     public Token(final String value, final TokenType type) {
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(value), "The value parameter is null or invalid");
+        if (StringHelper.isNullOrWhiteSpace(value)) {
+            throw new IllegalArgumentException("The value parameter is null or invalid");
+        }
         // PORT NOTE: Java doesn't have the concept of out-of-range enums
 
         this.Type = type;
@@ -61,8 +64,15 @@ public class Token extends Secret {
     }
 
     public Token(final String value, final String typeName) {
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(value), "The value parameter is null or invalid");
-        Debug.Assert(!StringHelper.isNullOrWhiteSpace(typeName), "The typeName parameter is null or invalid");
+        if (StringHelper.isNullOrWhiteSpace(value)) {
+            throw new IllegalArgumentException("The value parameter is null or invalid");
+        }
+        if (StringHelper.isNullOrWhiteSpace(value)) {
+            throw new IllegalArgumentException("The value parameter is null or invalid");
+        }
+        if (StringHelper.isNullOrWhiteSpace(value)) {
+            throw new IllegalArgumentException("The typeName parameter is null or invalid");
+        }
 
         AtomicReference<TokenType> type = new AtomicReference<TokenType>();
         if (!getTypeFromFriendlyName(typeName, type)) {

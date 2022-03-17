@@ -3,12 +3,13 @@
 
 package com.microsoft.a4o.credentialstorage.storage.posix;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.LoggingHelper;
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
 import com.microsoft.a4o.credentialstorage.storage.posix.internal.GnomeKeyringBackedSecureStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public class GnomeKeyringBackedTokenPairStore extends GnomeKeyringBackedSecureStore<TokenPair> {
 
@@ -16,14 +17,14 @@ public class GnomeKeyringBackedTokenPairStore extends GnomeKeyringBackedSecureSt
 
     @Override
     protected String serialize(final TokenPair tokenPair) {
-        Debug.Assert(tokenPair != null, "TokenPair cannot be null");
+        Objects.requireNonNull(tokenPair, "TokenPair cannot be null");
 
         return TokenPair.toXmlString(tokenPair);
     }
 
     @Override
     protected TokenPair deserialize(final String secret) {
-        Debug.Assert(secret != null, "secret cannot be null");
+        Objects.requireNonNull(secret, "secret cannot be null");
 
         try {
             return TokenPair.fromXmlString(secret);

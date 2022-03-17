@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.posix;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.LoggingHelper;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
@@ -18,6 +17,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.Objects;
 
 public class GnomeKeyringBackedCredentialStore extends GnomeKeyringBackedSecureStore<Credential> {
 
@@ -25,7 +25,7 @@ public class GnomeKeyringBackedCredentialStore extends GnomeKeyringBackedSecureS
 
     @Override
     protected Credential deserialize(final String secret) {
-        Debug.Assert(secret != null, "secret cannot be null");
+        Objects.requireNonNull(secret, "secret cannot be null");
 
         try {
             return fromXmlString(secret);
@@ -59,7 +59,7 @@ public class GnomeKeyringBackedCredentialStore extends GnomeKeyringBackedSecureS
 
     @Override
     protected String serialize(final Credential credential) {
-        Debug.Assert(credential != null, "Credential cannot be null");
+        Objects.requireNonNull(credential, "Credential cannot be null");
 
         return toXmlString(credential);
     }
@@ -80,7 +80,6 @@ public class GnomeKeyringBackedCredentialStore extends GnomeKeyringBackedSecureS
         catch (final Exception e) {
             throw new Error(e);
         }
-
     }
 
     @Override

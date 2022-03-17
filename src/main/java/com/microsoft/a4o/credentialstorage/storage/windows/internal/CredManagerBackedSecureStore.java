@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.windows.internal;
 
-import com.microsoft.a4o.credentialstorage.helpers.Debug;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Secret;
@@ -16,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * This class exposes functions to interact with Windows Credential Manager
@@ -68,12 +68,12 @@ public abstract class CredManagerBackedSecureStore<E extends Secret> implements 
      */
     @Override
     public E get(String key) {
-        Debug.Assert(key != null, "key cannot be null");
+        Objects.requireNonNull(key, "key cannot be null");
 
         logger.info("Getting secret for {}", key);
 
         final CredAdvapi32.PCREDENTIAL pcredential = new CredAdvapi32.PCREDENTIAL();
-        boolean read = false;
+        boolean read;
         E cred;
 
         try {
@@ -123,7 +123,7 @@ public abstract class CredManagerBackedSecureStore<E extends Secret> implements 
      */
     @Override
     public boolean delete(String key) {
-        Debug.Assert(key != null, "key cannot be null");
+        Objects.requireNonNull(key, "key cannot be null");
 
         logger.info("Deleting secret for {}", key);
 
@@ -151,8 +151,8 @@ public abstract class CredManagerBackedSecureStore<E extends Secret> implements 
      */
     @Override
     public boolean add(String key, E secret) {
-        Debug.Assert(key != null, "key cannot be null");
-        Debug.Assert(secret != null, "Secret cannot be null");
+        Objects.requireNonNull(key, "key cannot be null");
+        Objects.requireNonNull(secret, "Secret cannot be null");
 
         logger.info("Adding secret for {}", key);
 
