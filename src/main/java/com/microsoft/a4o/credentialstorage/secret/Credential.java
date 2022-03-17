@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.secret;
 
-import com.microsoft.a4o.credentialstorage.helpers.ObjectExtensions;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
 import org.w3c.dom.Document;
@@ -11,6 +10,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+
+import java.util.Objects;
 
 /**
  * Credential for user authentication.
@@ -26,8 +27,8 @@ public final class Credential extends Secret {
      * @param password The password value of the {@link Credential}.
      */
     public Credential(final String username, final String password) {
-        this.Username = ObjectExtensions.coalesce(username, StringHelper.Empty);
-        this.Password = ObjectExtensions.coalesce(password, StringHelper.Empty);
+        this.Username = Objects.requireNonNullElse(username, StringHelper.Empty);
+        this.Password = Objects.requireNonNullElse(password, StringHelper.Empty);
     }
 
     /**

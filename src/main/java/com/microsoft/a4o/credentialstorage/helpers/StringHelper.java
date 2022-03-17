@@ -4,6 +4,7 @@
 package com.microsoft.a4o.credentialstorage.helpers;
 
 import java.nio.charset.Charset;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class StringHelper {
@@ -120,19 +121,19 @@ public class StringHelper {
             throw new IllegalArgumentException("startIndex + count is greater than the number of elements in value");
 
         // "If separator is null, an empty string ( String.Empty) is used instead."
-        final String sep = ObjectExtensions.coalesce(separator, StringHelper.Empty);
+        final String sep = Objects.requireNonNullElse(separator, StringHelper.Empty);
 
         final StringBuilder result = new StringBuilder();
 
         if (value.length > 0 && count > 0) {
-            String element = ObjectExtensions.coalesce(value[startIndex], StringHelper.Empty);
+            String element = Objects.requireNonNullElse(value[startIndex], StringHelper.Empty);
             if (processor != null) {
                 element = processor.apply(element);
             }
             result.append(element);
             for (int i = startIndex + 1; i < startIndex + count; i++) {
                 result.append(sep);
-                element = ObjectExtensions.coalesce(value[i], StringHelper.Empty);
+                element = Objects.requireNonNullElse(value[i], StringHelper.Empty);
                 if (processor != null) {
                     element = processor.apply(element);
                 }
