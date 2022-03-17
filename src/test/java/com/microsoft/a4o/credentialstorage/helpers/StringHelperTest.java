@@ -3,14 +3,13 @@
 
 package com.microsoft.a4o.credentialstorage.helpers;
 
-import com.microsoft.a4o.credentialstorage.helpers.Func;
-import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.function.Function;
 
 public class StringHelperTest {
     @Test
@@ -130,15 +129,7 @@ public class StringHelperTest {
 
     @Test
     public void join_withQuotingProcessor() {
-        final Func<String, String> quotingProcessor = new Func<String, String>() {
-            @Override
-	public String call(final String s) {
-                if (s.contains(" ")) {
-                    return '"' + s + '"';
-                }
-                return s;
-            }
-        };
+        final Function<String, String> quotingProcessor = str -> str.contains(" ") ? '"' + str + '"' : str;
         final String[] args = {"--user", "man-with-hat", "--password", "battery horse staple correct"};
 
         final String actual = StringHelper.join(" ", args, 0, args.length, quotingProcessor);

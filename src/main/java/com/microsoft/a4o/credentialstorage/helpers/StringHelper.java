@@ -4,6 +4,7 @@
 package com.microsoft.a4o.credentialstorage.helpers;
 
 import java.nio.charset.Charset;
+import java.util.function.Function;
 
 public class StringHelper {
     private static final Charset UTF8 = Charset.forName("UTF-8");
@@ -108,7 +109,7 @@ public class StringHelper {
      * or separator and all the elements of value are {@link StringHelper#Empty}.
      */
     public static String join(final String separator, final String[] value, final int startIndex, final int count,
-                              final Func<String, String> processor) {
+                              final Function<String, String> processor) {
         if (value == null)
             throw new IllegalArgumentException("value is null");
         if (startIndex < 0)
@@ -126,14 +127,14 @@ public class StringHelper {
         if (value.length > 0 && count > 0) {
             String element = ObjectExtensions.coalesce(value[startIndex], StringHelper.Empty);
             if (processor != null) {
-                element = processor.call(element);
+                element = processor.apply(element);
             }
             result.append(element);
             for (int i = startIndex + 1; i < startIndex + count; i++) {
                 result.append(sep);
                 element = ObjectExtensions.coalesce(value[i], StringHelper.Empty);
                 if (processor != null) {
-                    element = processor.call(element);
+                    element = processor.apply(element);
                 }
                 result.append(element);
             }

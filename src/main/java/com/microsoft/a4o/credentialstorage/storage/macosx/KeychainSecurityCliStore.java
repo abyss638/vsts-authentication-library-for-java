@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.macosx;
 
-import com.microsoft.a4o.credentialstorage.helpers.Func;
 import com.microsoft.a4o.credentialstorage.helpers.IOHelper;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
@@ -17,6 +16,7 @@ import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,7 +38,7 @@ class KeychainSecurityCliStore {
     private static final int USER_INTERACTION_NOT_ALLOWED_EXIT_CODE = 36;
     private static final String INTERACTIVE_MODE = "-i";
 
-    private static final Func<String, String> QUOTING_PROCESSOR = str -> str.contains(" ") ? '"' + str + '"' : str;
+    private static final Function<String, String> QUOTING_PROCESSOR = str -> str.contains(" ") ? '"' + str + '"' : str;
 
     private static final Pattern MetadataLinePattern = Pattern.compile
             (
