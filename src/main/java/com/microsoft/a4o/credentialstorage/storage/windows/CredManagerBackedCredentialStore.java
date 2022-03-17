@@ -15,11 +15,11 @@ public class CredManagerBackedCredentialStore extends CredManagerBackedSecureSto
 
     @Override
     protected String getUsername(final Credential cred) {
-        return cred.Username;
+        return cred.getUsername();
     }
 
     @Override
     protected String getCredentialBlob(final Credential cred) {
-        return cred.Password;
+        return cred.getPassword();
     }
 }

@@ -20,6 +20,9 @@ public final class Credential extends Secret {
     public static final int USERNAME_MAX_LENGTH = 511;
     public static final int PASSWORD_MAX_LENGTH = 2047;
 
+    private final String username;
+    private final String password;
+
     /**
      * Creates a credential object with a username and password pair.
      *
@@ -27,8 +30,8 @@ public final class Credential extends Secret {
      * @param password The password value of the {@link Credential}.
      */
     public Credential(final String username, final String password) {
-        this.Username = Objects.requireNonNullElse(username, StringHelper.Empty);
-        this.Password = Objects.requireNonNullElse(password, StringHelper.Empty);
+        this.username = Objects.requireNonNullElse(username, StringHelper.Empty);
+        this.password = Objects.requireNonNullElse(password, StringHelper.Empty);
     }
 
     /**
@@ -41,13 +44,18 @@ public final class Credential extends Secret {
     }
 
     /**
-     * Secret related to the username.
-     */
-    public final String Password;
-    /**
      * Unique identifier of the user.
      */
-    public final String Username;
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Secret related to the username.
+     */
+    public String getPassword() {
+        return password;
+    }
 
     public static Credential fromXml(final Node credentialNode) {
         Credential value;
@@ -74,12 +82,12 @@ public final class Credential extends Secret {
         final Element valueNode = document.createElement("value");
 
         final Element passwordNode = document.createElement("Password");
-        final Text passwordValue = document.createTextNode(this.Password);
+        final Text passwordValue = document.createTextNode(this.password);
         passwordNode.appendChild(passwordValue);
         valueNode.appendChild(passwordNode);
 
         final Element usernameNode = document.createElement("Username");
-        final Text usernameValue = document.createTextNode(this.Username);
+        final Text usernameValue = document.createTextNode(this.username);
         usernameNode.appendChild(usernameValue);
         valueNode.appendChild(usernameNode);
 
@@ -107,17 +115,17 @@ public final class Credential extends Secret {
     public int hashCode() {
         // PORT NOTE: Java doesn't have unchecked blocks; the default behaviour is apparently equivalent.
         {
-            return Username.hashCode() + 7 * Password.hashCode();
+            return username.hashCode() + 7 * password.hashCode();
         }
     }
 
     public static void validate(final Credential credentials) {
         if (credentials == null)
             throw new IllegalArgumentException("The credentials parameter cannot be null");
-        if (credentials.Password.length() > PASSWORD_MAX_LENGTH)
+        if (credentials.password.length() > PASSWORD_MAX_LENGTH)
             throw new IllegalArgumentException(String.format("The Password field of the credentials parameter cannot " +
                     "be longer than %1$d characters.", PASSWORD_MAX_LENGTH));
-        if (credentials.Username.length() > USERNAME_MAX_LENGTH)
+        if (credentials.username.length() > USERNAME_MAX_LENGTH)
             throw new IllegalArgumentException(String.format("The Username field of the credentials parameter cannot " +
                     "be longer than %1$d characters.", USERNAME_MAX_LENGTH));
     }
@@ -135,8 +143,8 @@ public final class Credential extends Secret {
         if ((credential1 == null) || (null == credential2))
             return false;
 
-        return credential1.Username.equals(credential2.Username)
-                && credential1.Password.equals(credential2.Password);
+        return credential1.username.equals(credential2.username)
+                && credential1.password.equals(credential2.password);
     }
 
     /**

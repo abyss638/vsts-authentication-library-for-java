@@ -5,7 +5,6 @@ package com.microsoft.a4o.credentialstorage.storage.windows;
 
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
-import com.microsoft.a4o.credentialstorage.storage.windows.CredManagerBackedTokenPairStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,8 +38,8 @@ public class CredManagerBackedTokenPairStoreIT {
         final TokenPair readValue = underTest.get(testKey);
 
         // Only save refresh token
-        assertEquals("", readValue.AccessToken.Value);
-        assertEquals(tokenPair.RefreshToken.Value, readValue.RefreshToken.Value);
+        assertEquals("", readValue.getAccessToken().getValue());
+        assertEquals(tokenPair.getRefreshToken().getValue(), readValue.getRefreshToken().getValue());
 
         boolean deleted = underTest.delete(testKey);
         assertTrue(deleted);

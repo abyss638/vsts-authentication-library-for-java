@@ -13,6 +13,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -20,6 +21,20 @@ import java.util.concurrent.atomic.AtomicReference;
  * A security token, usually acquired by some authentication and identity services.
  */
 public class Token extends Secret {
+    /**
+     * The type of the security token.
+     */
+    private final TokenType type;
+
+    /**
+     * The raw contents of the token.
+     */
+    private final String value;
+
+    /**
+     * The target identity for the security token.
+     */
+    private final UUID targetIdentity;
 
     public static boolean getFriendlyNameFromType(final TokenType type, final AtomicReference<String> name) {
         // PORT NOTE: Java doesn't have the concept of out-of-range enums
@@ -54,13 +69,7 @@ public class Token extends Secret {
     }
 
     public Token(final String value, final TokenType type) {
-        if (StringHelper.isNullOrWhiteSpace(value)) {
-            throw new IllegalArgumentException("The value parameter is null or invalid");
-        }
-        // PORT NOTE: Java doesn't have the concept of out-of-range enums
-
-        this.Type = type;
-        this.Value = value;
+        this(value, type, Guid.Empty);
     }
 
     public Token(final String value, final String typeName) {
@@ -78,22 +87,34 @@ public class Token extends Secret {
         if (!getTypeFromFriendlyName(typeName, type)) {
             throw new IllegalArgumentException("Unexpected token type '" + typeName + "' encountered");
         }
-        this.Type = type.get();
-        this.Value = value;
+        this.type = type.get();
+        this.value = value;
+        this.targetIdentity = Guid.Empty;
     }
 
-    // PORT NOTE: ADAL-specific constructor omitted
+    public Token(final String value, final TokenType type, final UUID targetIdentity) {
+        if (StringHelper.isNullOrWhiteSpace(value)) {
+            throw new IllegalArgumentException("The value parameter is null or invalid");
+        }
+        Objects.requireNonNull(type, "The type parameter is null");
+        Objects.requireNonNull(targetIdentity, "The targetIdentity parameter is null");
 
-    /**
-     * The type of the security token.
-     */
-    public final TokenType Type;
-    /**
-     * The raw contents of the token.
-     */
-    public final String Value;
+        this.type = type;
+        this.value = value;
+        this.targetIdentity = targetIdentity;
+    }
 
-    UUID targetIdentity = Guid.Empty;
+    public TokenType getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public UUID getTargetIdentity() {
+        return targetIdentity;
+    }
 
     public static Token fromXml(final Node tokenNode) {
         Token value;
@@ -114,8 +135,7 @@ public class Token extends Secret {
                 targetIdentity = UUID.fromString(XmlHelper.getText(propertyNode));
             }
         }
-        value = new Token(tokenValue, tokenType);
-        value.setTargetIdentity(targetIdentity);
+        value = new Token(tokenValue, tokenType, targetIdentity);
         return value;
     }
 
@@ -123,12 +143,12 @@ public class Token extends Secret {
         final Element valueNode = document.createElement("value");
 
         final Element typeNode = document.createElement("Type");
-        final Text typeValue = document.createTextNode(this.Type.toString());
+        final Text typeValue = document.createTextNode(this.type.toString());
         typeNode.appendChild(typeValue);
         valueNode.appendChild(typeNode);
 
         final Element tokenValueNode = document.createElement("Value");
-        final Text valueValue = document.createTextNode(this.Value);
+        final Text valueValue = document.createTextNode(this.value);
         tokenValueNode.appendChild(valueValue);
         valueNode.appendChild(tokenValueNode);
 
@@ -139,17 +159,6 @@ public class Token extends Secret {
             valueNode.appendChild(targetIdentityNode);
         }
         return valueNode;
-    }
-
-    /**
-     * @return The guid form Identity of the target
-     */
-    public UUID getTargetIdentity() {
-        return targetIdentity;
-    }
-
-    public void setTargetIdentity(final UUID targetIdentity) {
-        this.targetIdentity = targetIdentity;
     }
 
     /**
@@ -173,7 +182,7 @@ public class Token extends Secret {
     public int hashCode() {
         // PORT NOTE: Java doesn't have unchecked blocks; the default behaviour is apparently equivalent.
         {
-            return Type.getValue() * Value.hashCode();
+            return type.ordinal() * value.hashCode();
         }
     }
 
@@ -185,7 +194,7 @@ public class Token extends Secret {
     @Override
     public String toString() {
         final AtomicReference<String> value = new AtomicReference<String>();
-        if (getFriendlyNameFromType(Type, value))
+        if (getFriendlyNameFromType(type, value))
             return value.get();
         else
             return super.toString();
@@ -194,9 +203,9 @@ public class Token extends Secret {
     public static void validate(final Token token) {
         if (token == null)
             throw new IllegalArgumentException("The `token` parameter is null or invalid.");
-        if (StringHelper.isNullOrWhiteSpace(token.Value))
+        if (StringHelper.isNullOrWhiteSpace(token.value))
             throw new IllegalArgumentException("The value of the `token` cannot be null or empty.");
-        if (token.Value.length() > Credential.PASSWORD_MAX_LENGTH)
+        if (token.value.length() > Credential.PASSWORD_MAX_LENGTH)
             throw new IllegalArgumentException(String.format("The value of the `token` cannot be longer than %1$d " +
                     "characters.", Credential.PASSWORD_MAX_LENGTH));
     }
@@ -206,17 +215,16 @@ public class Token extends Secret {
      *
      * @param token The {@link Token} to convert.
      * @return A corresponding {@link Credential} instance.
-     * @throws IllegalArgumentException if the {@link Token#Type} is not {@link TokenType#Personal}.
+     * @throws IllegalArgumentException if the {@link Token#type} is not {@link TokenType#Personal}.
      */
-    // PORT NOTE: Java doesn't have cast operator overloading
     public static Credential toCredential(final Token token) {
         if (token == null)
             return null;
 
-        if (token.Type != TokenType.Personal)
-            throw new IllegalArgumentException("Cannot convert " + token.toString() + " to credentials");
+        if (token.type != TokenType.Personal)
+            throw new IllegalArgumentException("Cannot convert " + token + " to credentials");
 
-        return new Credential(token.toString(), token.Value);
+        return new Credential(token.toString(), token.value);
     }
 
     /**
@@ -232,8 +240,8 @@ public class Token extends Secret {
         if ((token1 == null) || (null == token2))
             return false;
 
-        return token1.Type == token2.Type
-                && token1.Value.equalsIgnoreCase(token2.Value);
+        return token1.type == token2.type
+                && token1.value.equalsIgnoreCase(token2.value);
     }
 
     /**

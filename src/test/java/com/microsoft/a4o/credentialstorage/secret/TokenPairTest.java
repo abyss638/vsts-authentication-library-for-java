@@ -43,7 +43,7 @@ public class TokenPairTest {
 
         final TokenPair actualTokenPair = TokenPair.fromXml(rootNode);
 
-        assertEquals(tokenPair.AccessToken.Value, actualTokenPair.AccessToken.Value);
-        assertEquals(tokenPair.RefreshToken.Value, actualTokenPair.RefreshToken.Value);
+        assertEquals(tokenPair.getAccessToken().getValue(), actualTokenPair.getAccessToken().getValue());
+        assertEquals(tokenPair.getRefreshToken().getValue(), actualTokenPair.getRefreshToken().getValue());
     }
 }

@@ -5,7 +5,6 @@ package com.microsoft.a4o.credentialstorage.storage.posix;
 
 import com.microsoft.a4o.credentialstorage.secret.Token;
 import com.microsoft.a4o.credentialstorage.secret.TokenType;
-import com.microsoft.a4o.credentialstorage.storage.posix.GnomeKeyringBackedTokenStore;
 import com.microsoft.a4o.credentialstorage.storage.posix.internal.GnomeKeyringBackedSecureStore;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +37,7 @@ public class GnomeKeyringBackedTokenStoreIT {
 
         final Token readValue = underTest.get(testKey);
 
-        assertEquals(token.Value, readValue.Value);
+        assertEquals(token.getValue(), readValue.getValue());
 
         boolean deleted = underTest.delete(testKey);
         assertTrue(deleted);

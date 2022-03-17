@@ -5,7 +5,6 @@ package com.microsoft.a4o.credentialstorage.storage.windows;
 
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
-import com.microsoft.a4o.credentialstorage.storage.windows.CredManagerBackedCredentialStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,8 +38,8 @@ public class CredManagerBackedCredentialStoreIT {
 
         Credential readCred = underTest.get(key);
 
-        assertEquals("Retrieved Credential.Username is different", username, credential.Username);
-        assertEquals("Retrieved Credential.Password is different", password, credential.Password);
+        assertEquals("Retrieved Credential.Username is different", username, credential.getUsername());
+        assertEquals("Retrieved Credential.Password is different", password, credential.getPassword());
 
         // The credential under the specified key should be deleted now, it's a good idea to manually verify this now
         boolean deleted = underTest.delete(key);

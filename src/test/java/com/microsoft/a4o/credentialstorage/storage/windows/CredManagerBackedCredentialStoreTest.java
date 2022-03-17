@@ -4,7 +4,6 @@
 package com.microsoft.a4o.credentialstorage.storage.windows;
 
 import com.microsoft.a4o.credentialstorage.secret.Credential;
-import com.microsoft.a4o.credentialstorage.storage.windows.CredManagerBackedCredentialStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,8 +25,8 @@ public class CredManagerBackedCredentialStoreTest {
     public void testCreate() throws Exception {
         Credential credential= underTest.create(username, password);
 
-        assertEquals("Username not correct", username, credential.Username);
-        assertEquals("Password not correct", password, credential.Password);
+        assertEquals("Username not correct", username, credential.getUsername());
+        assertEquals("Password not correct", password, credential.getPassword());
     }
 
     @Test

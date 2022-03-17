@@ -74,9 +74,6 @@ public class StorageProvider {
             tokenPairStoreCandidates.add(new GnomeKeyringBackedTokenPairStore());
         }
 
-        tokenStoreCandidates.add(new InsecureFileBackedTokenStore());
-        credentialStoreCandidates.add(new InsecureFileBackedCredentialStore());
-
         PERSISTED_TOKEN_STORE_CANDIDATES = tokenStoreCandidates;
         PERSISTED_TOKENPAIR_STORE_CANDIDATES = tokenPairStoreCandidates;
         PERSISTED_CREDENTIAL_STORE_CANDIDATES = credentialStoreCandidates;

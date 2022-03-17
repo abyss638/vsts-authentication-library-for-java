@@ -23,6 +23,21 @@ public class TokenPair extends Secret {
     private static final Map<String, String> EMPTY_MAP = Collections.unmodifiableMap(new LinkedHashMap<String, String>(0));
 
     /**
+     * Access token, used to grant access to resources.
+     */
+    private final Token accessToken;
+
+    /**
+     * Refresh token, used to grant new access tokens.
+     */
+    private final Token refreshToken;
+
+    /**
+     * Additional token parameters.
+     */
+    private final Map<String, String> parameters;
+
+    /**
      * Creates a new {@link TokenPair} from raw access and refresh token data.
      *
      * @param accessToken  The base64 encoded value of the access token's raw data
@@ -36,20 +51,22 @@ public class TokenPair extends Secret {
             throw new IllegalArgumentException("The refreshToken parameter is null or invalid.");
         }
 
-        this.AccessToken = new Token(accessToken, TokenType.Access);
-        this.RefreshToken = new Token(refreshToken, TokenType.Refresh);
-        this.Parameters = EMPTY_MAP;
+        this.accessToken = new Token(accessToken, TokenType.Access);
+        this.refreshToken = new Token(refreshToken, TokenType.Refresh);
+        this.parameters = EMPTY_MAP;
     }
 
-    /**
-     * Access token, used to grant access to resources.
-     */
-    public final Token AccessToken;
-    /**
-     * Refresh token, used to grant new access tokens.
-     */
-    public final Token RefreshToken;
-    public final Map<String, String> Parameters;
+    public Token getAccessToken() {
+        return accessToken;
+    }
+
+    public Token getRefreshToken() {
+        return refreshToken;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
 
     public static TokenPair fromXml(final Node tokenPairNode) {
         TokenPair value;
@@ -76,12 +93,12 @@ public class TokenPair extends Secret {
         final Element valueNode = document.createElement("value");
 
         final Element accessTokenNode = document.createElement("accessToken");
-        final Text accessTokenValue = document.createTextNode(AccessToken.Value);
+        final Text accessTokenValue = document.createTextNode(accessToken.getValue());
         accessTokenNode.appendChild(accessTokenValue);
         valueNode.appendChild(accessTokenNode);
 
         final Element refreshTokenNode = document.createElement("refreshToken");
-        final Text refreshTokenValue = document.createTextNode(RefreshToken.Value);
+        final Text refreshTokenValue = document.createTextNode(refreshToken.getValue());
         refreshTokenNode.appendChild(refreshTokenValue);
         valueNode.appendChild(refreshTokenNode);
 
@@ -149,7 +166,7 @@ public class TokenPair extends Secret {
     public int hashCode() {
         // PORT NOTE: Java doesn't have unchecked blocks; the default behaviour is apparently equivalent.
         {
-            return AccessToken.hashCode() * RefreshToken.hashCode();
+            return accessToken.hashCode() * refreshToken.hashCode();
         }
     }
 
@@ -166,8 +183,8 @@ public class TokenPair extends Secret {
         if ((pair1 == null) || (null == pair2))
             return false;
 
-        return Token.operatorEquals(pair1.AccessToken, pair2.AccessToken)
-                && Token.operatorEquals(pair1.RefreshToken, pair2.RefreshToken);
+        return Token.operatorEquals(pair1.accessToken, pair2.accessToken)
+                && Token.operatorEquals(pair1.refreshToken, pair2.refreshToken);
     }
 
     /**

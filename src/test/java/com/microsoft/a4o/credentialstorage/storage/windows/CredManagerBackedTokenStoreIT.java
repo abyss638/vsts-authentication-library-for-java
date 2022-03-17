@@ -6,7 +6,6 @@ package com.microsoft.a4o.credentialstorage.storage.windows;
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Token;
 import com.microsoft.a4o.credentialstorage.secret.TokenType;
-import com.microsoft.a4o.credentialstorage.storage.windows.CredManagerBackedTokenStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,7 +37,7 @@ public class CredManagerBackedTokenStoreIT {
 
         Token readToken = underTest.get(key);
 
-        assertEquals("Retrieved token is different", token.Value, readToken.Value);
+        assertEquals("Retrieved token is different", token.getValue(), readToken.getValue());
 
         // The token under the specified key should be deleted now, it's a good idea to manually verify this now
         boolean deleted = underTest.delete(key);

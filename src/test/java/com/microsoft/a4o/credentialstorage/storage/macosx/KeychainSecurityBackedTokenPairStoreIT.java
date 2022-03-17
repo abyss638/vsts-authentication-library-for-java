@@ -5,7 +5,6 @@ package com.microsoft.a4o.credentialstorage.storage.macosx;
 
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
-import com.microsoft.a4o.credentialstorage.storage.macosx.KeychainSecurityBackedTokenPairStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,8 +37,8 @@ public class KeychainSecurityBackedTokenPairStoreIT {
 
         final TokenPair readToken = underTest.get(key);
 
-        assertEquals("Retrieved Access Token is different", sampleAccessToken, readToken.AccessToken.Value);
-        assertEquals("Retrieved Refresh Token is different", sampleRefreshToken, readToken.RefreshToken.Value);
+        assertEquals("Retrieved Access Token is different", sampleAccessToken, readToken.getAccessToken().getValue());
+        assertEquals("Retrieved Refresh Token is different", sampleRefreshToken, readToken.getRefreshToken().getValue());
 
         // The credential under the specified key should be deleted now
         underTest.delete(key);

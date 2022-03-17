@@ -23,6 +23,6 @@ public class CredManagerBackedTokenStore extends CredManagerBackedSecureStore<To
 
     @Override
     protected String getCredentialBlob(final Token token) {
-        return token.Value;
+        return token.getValue();
     }
 }

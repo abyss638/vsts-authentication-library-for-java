@@ -5,7 +5,6 @@ package com.microsoft.a4o.credentialstorage.storage.windows;
 
 import com.microsoft.a4o.credentialstorage.secret.Token;
 import com.microsoft.a4o.credentialstorage.secret.TokenType;
-import com.microsoft.a4o.credentialstorage.storage.windows.CredManagerBackedTokenStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +25,7 @@ public class CredManagerBackedTokenStoreTest {
         final String secretValue = "my secret";
         Token token = underTest.create("do not care", secretValue);
 
-        assertEquals("Secret not correct", secretValue, token.Value);
+        assertEquals("Secret not correct", secretValue, token.getValue());
     }
 
     @Test

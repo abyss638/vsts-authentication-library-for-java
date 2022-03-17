@@ -23,6 +23,6 @@ public class CredManagerBackedTokenPairStore extends CredManagerBackedSecureStor
     protected String getCredentialBlob(final TokenPair tokenPair) {
         // Only save refresh token on Windows
         // Cred Manager has a 4K size limit, need to make sure we stay under this limit
-        return tokenPair.RefreshToken.Value;
+        return tokenPair.getRefreshToken().getValue();
     }
 }

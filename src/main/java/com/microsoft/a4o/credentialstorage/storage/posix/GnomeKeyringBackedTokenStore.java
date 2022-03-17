@@ -16,7 +16,7 @@ public class GnomeKeyringBackedTokenStore extends GnomeKeyringBackedSecureStore<
 
     @Override
     protected String serialize(final Token secret) {
-        return secret.Value;
+        return secret.getValue();
     }
 
     @Override

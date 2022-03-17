@@ -41,7 +41,7 @@ public class CredentialTest {
 
         final Credential actualCredential = Credential.fromXml(rootNode);
 
-        Assert.assertEquals(credential.Username, actualCredential.Username);
-        Assert.assertEquals(credential.Password, actualCredential.Password);
+        Assert.assertEquals(credential.getUsername(), actualCredential.getUsername());
+        Assert.assertEquals(credential.getPassword(), actualCredential.getPassword());
     }
 }

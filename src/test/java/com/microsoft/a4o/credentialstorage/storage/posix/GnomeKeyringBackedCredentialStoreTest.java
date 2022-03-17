@@ -4,7 +4,6 @@
 package com.microsoft.a4o.credentialstorage.storage.posix;
 
 import com.microsoft.a4o.credentialstorage.secret.Credential;
-import com.microsoft.a4o.credentialstorage.storage.posix.GnomeKeyringBackedCredentialStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,8 +25,8 @@ public class GnomeKeyringBackedCredentialStoreTest {
         final Credential cred = new Credential(username, password);
         final String serialized = underTest.serialize(cred);
         final Credential processedCred = underTest.deserialize(serialized);
-        assertEquals(username, processedCred.Username);
-        assertEquals(password, processedCred.Password);
+        assertEquals(username, processedCred.getUsername());
+        assertEquals(password, processedCred.getPassword());
     }
 
 }

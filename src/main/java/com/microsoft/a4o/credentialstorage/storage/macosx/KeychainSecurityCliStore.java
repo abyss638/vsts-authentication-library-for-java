@@ -414,7 +414,7 @@ class KeychainSecurityCliStore {
     }
 
     public void writeCredential(final String targetName, final Credential credentials) {
-        write(SecretKind.Credential, targetName, credentials.Username, credentials.Password);
+        write(SecretKind.Credential, targetName, credentials.getUsername(), credentials.getPassword());
     }
 
     public void writeToken(final String targetName, final Token token) {
@@ -423,18 +423,18 @@ class KeychainSecurityCliStore {
 
     private void writeTokenKind(final String targetName, final SecretKind secretKind, final Token token) {
         final AtomicReference<String> accountNameReference = new AtomicReference<>();
-        Token.getFriendlyNameFromType(token.Type, accountNameReference);
+        Token.getFriendlyNameFromType(token.getType(), accountNameReference);
         final String accountName = accountNameReference.get();
-        write(secretKind, targetName, accountName, token.Value);
+        write(secretKind, targetName, accountName, token.getValue());
     }
 
     public void writeTokenPair(final String targetName, final TokenPair tokenPair) {
-        if (tokenPair.AccessToken.Value != null) {
-            writeTokenKind(targetName, SecretKind.TokenPair_Access_Token, tokenPair.AccessToken);
+        if (tokenPair.getAccessToken().getValue() != null) {
+            writeTokenKind(targetName, SecretKind.TokenPair_Access_Token, tokenPair.getAccessToken());
         }
 
-        if (tokenPair.RefreshToken.Value != null) {
-            writeTokenKind(targetName, SecretKind.TokenPair_Refresh_Token, tokenPair.RefreshToken);
+        if (tokenPair.getRefreshToken().getValue() != null) {
+            writeTokenKind(targetName, SecretKind.TokenPair_Refresh_Token, tokenPair.getRefreshToken());
         }
     }
 }

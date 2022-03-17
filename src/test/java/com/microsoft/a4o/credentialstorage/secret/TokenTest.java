@@ -19,8 +19,7 @@ public class TokenTest {
 
     @Test
     public void xmlSerialization_roundTrip() throws Exception {
-        final Token token = new Token("1", TokenType.Access);
-        token.targetIdentity = UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff");
+        final Token token = new Token("1", TokenType.Access, UUID.fromString("ffffffff-ffff-ffff-ffff-ffffffffffff"));
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         final DocumentBuilder builder = dbf.newDocumentBuilder();
         final Document serializationDoc = builder.newDocument();
@@ -44,9 +43,9 @@ public class TokenTest {
 
         final Token actualToken = Token.fromXml(rootNode);
 
-        Assert.assertEquals(token.Value, actualToken.Value);
-        Assert.assertEquals(token.Type, actualToken.Type);
-        Assert.assertEquals(token.targetIdentity, actualToken.targetIdentity);
+        Assert.assertEquals(token.getValue(), actualToken.getValue());
+        Assert.assertEquals(token.getType(), actualToken.getType());
+        Assert.assertEquals(token.getTargetIdentity(), actualToken.getTargetIdentity());
     }
 
     @Test(expected = IllegalArgumentException.class)

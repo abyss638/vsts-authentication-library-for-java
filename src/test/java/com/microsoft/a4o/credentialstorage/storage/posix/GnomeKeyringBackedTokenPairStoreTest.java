@@ -4,7 +4,6 @@
 package com.microsoft.a4o.credentialstorage.storage.posix;
 
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
-import com.microsoft.a4o.credentialstorage.storage.posix.GnomeKeyringBackedTokenPairStore;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,7 +50,7 @@ public class GnomeKeyringBackedTokenPairStoreTest {
         final String serialized = underTest.serialize(tokenPair);
         final TokenPair processed = underTest.deserialize(serialized);
 
-        assertEquals(tokenPair.AccessToken, processed.AccessToken);
-        assertEquals(tokenPair.RefreshToken, processed.RefreshToken);
+        assertEquals(tokenPair.getAccessToken(), processed.getAccessToken());
+        assertEquals(tokenPair.getRefreshToken(), processed.getRefreshToken());
     }
 }
