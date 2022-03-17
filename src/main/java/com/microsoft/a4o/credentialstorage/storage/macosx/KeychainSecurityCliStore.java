@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.macosx;
 
-import com.microsoft.a4o.credentialstorage.helpers.IOHelper;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
 import com.microsoft.a4o.credentialstorage.secret.Token;
@@ -11,6 +10,8 @@ import com.microsoft.a4o.credentialstorage.secret.TokenPair;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.HashMap;
@@ -113,7 +114,11 @@ class KeychainSecurityCliStore {
         } catch (final IOException e) {
             throw new Error(e);
         } finally {
-            IOHelper.closeQuietly(br);
+            try {
+                br.close();
+            } catch (IOException e) {
+                // never happens
+            }
         }
     }
 
@@ -273,8 +278,8 @@ class KeychainSecurityCliStore {
             );
             final Process process = processBuilder.start();
             final int result = process.waitFor();
-            stdOut = IOHelper.readToString(process.getInputStream());
-            stdErr = IOHelper.readToString(process.getErrorStream());
+            stdOut = readToString(process.getInputStream());
+            stdErr = readToString(process.getErrorStream());
             checkResult(result, stdOut, stdErr);
         } catch (final IOException | InterruptedException e) {
             throw new Error(e);
@@ -310,8 +315,8 @@ class KeychainSecurityCliStore {
             final Process process = processBuilder.start();
 
             final int result = process.waitFor();
-            stdOut = IOHelper.readToString(process.getInputStream());
-            stdErr = IOHelper.readToString(process.getErrorStream());
+            stdOut = readToString(process.getInputStream());
+            stdErr = readToString(process.getErrorStream());
             if (result != 0 && result != ITEM_NOT_FOUND_EXIT_CODE) {
                 checkResult(result, stdOut, stdErr);
             }
@@ -405,8 +410,8 @@ class KeychainSecurityCliStore {
             writer.println(command);
 
             final int result = process.waitFor();
-            stdOut = IOHelper.readToString(process.getInputStream());
-            stdErr = IOHelper.readToString(process.getErrorStream());
+            stdOut = readToString(process.getInputStream());
+            stdErr = readToString(process.getErrorStream());
             checkResult(result, stdOut, stdErr);
         } catch (final IOException | InterruptedException e) {
             throw new Error(e);
@@ -437,4 +442,17 @@ class KeychainSecurityCliStore {
             writeTokenKind(targetName, SecretKind.TokenPair_Refresh_Token, tokenPair.getRefreshToken());
         }
     }
+
+    private static String readToString(final InputStream stream) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream))) {
+            final StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append(System.getProperty("line.separator"));
+            }
+            return sb.toString();
+        }
+    }
+
 }
