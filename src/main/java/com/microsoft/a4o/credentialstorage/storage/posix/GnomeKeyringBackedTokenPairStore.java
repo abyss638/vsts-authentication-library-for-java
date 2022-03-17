@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.posix;
 
-import com.microsoft.a4o.credentialstorage.helpers.LoggingHelper;
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
 import com.microsoft.a4o.credentialstorage.storage.posix.internal.GnomeKeyringBackedSecureStore;
 import org.slf4j.Logger;
@@ -29,7 +28,7 @@ public class GnomeKeyringBackedTokenPairStore extends GnomeKeyringBackedSecureSt
         try {
             return TokenPair.fromXmlString(secret);
         } catch (final Exception e) {
-            LoggingHelper.logError(logger, "Failed to deserialize the stored secret. Return null.", e);
+            logger.error("Failed to deserialize the stored secret. Return null.", e);
             return null;
         }
     }

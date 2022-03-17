@@ -7,8 +7,6 @@ import com.microsoft.a4o.credentialstorage.secret.Credential;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static com.microsoft.a4o.credentialstorage.helpers.LoggingHelper.logError;
-
 public class InsecureFileBackedCredentialStore implements SecretStore<Credential> {
 
     private static Logger logger = LoggerFactory.getLogger(InsecureFileBackedCredentialStore.class);
@@ -32,7 +30,7 @@ public class InsecureFileBackedCredentialStore implements SecretStore<Credential
 
             return true;
         } catch (final Throwable t) {
-            logError(logger, "Failed to add secret to file backed credential store.", t);
+            logger.error("Failed to add secret to file backed credential store.", t);
 
             return false;
         }

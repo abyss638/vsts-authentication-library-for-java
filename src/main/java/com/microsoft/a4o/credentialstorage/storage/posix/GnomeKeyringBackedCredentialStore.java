@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.storage.posix;
 
-import com.microsoft.a4o.credentialstorage.helpers.LoggingHelper;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
@@ -30,7 +29,7 @@ public class GnomeKeyringBackedCredentialStore extends GnomeKeyringBackedSecureS
         try {
             return fromXmlString(secret);
         } catch (final Exception e) {
-            LoggingHelper.logError(logger, "Failed to deserialize credential.", e);
+            logger.error("Failed to deserialize credential.", e);
             return null;
         }
     }

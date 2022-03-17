@@ -7,7 +7,6 @@ import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.SystemHelper;
 import com.microsoft.a4o.credentialstorage.secret.Secret;
 import com.microsoft.a4o.credentialstorage.storage.SecretStore;
-import com.microsoft.a4o.credentialstorage.helpers.LoggingHelper;
 import com.sun.jna.LastErrorException;
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
@@ -96,7 +95,7 @@ public abstract class CredManagerBackedSecureStore<E extends Secret> implements 
             }
 
         } catch (final LastErrorException e) {
-            LoggingHelper.logError(logger, "Getting secret failed.", e);
+            logger.error("Getting secret failed.", e);
             cred = null;
 
         } finally {
@@ -132,7 +131,7 @@ public abstract class CredManagerBackedSecureStore<E extends Secret> implements 
                 return INSTANCE.CredDelete(key, CredAdvapi32.CRED_TYPE_GENERIC, 0);
             }
         } catch (LastErrorException e) {
-            LoggingHelper.logError(logger, "Deleteing secret failed.", e);
+            logger.error("Deleting secret failed.", e);
             return false;
         }
     }
@@ -170,7 +169,7 @@ public abstract class CredManagerBackedSecureStore<E extends Secret> implements 
             return true;
         }
         catch (LastErrorException e) {
-            LoggingHelper.logError(logger, "Adding secret failed.", e);
+            logger.error("Adding secret failed.", e);
             return false;
         } finally {
             cred.CredentialBlob.clear(credBlob.length);
