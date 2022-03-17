@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.secret;
 
-import com.microsoft.a4o.credentialstorage.helpers.Guid;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
 import org.w3c.dom.Document;
@@ -21,6 +20,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * A security token, usually acquired by some authentication and identity services.
  */
 public class Token extends Secret {
+    private static final UUID EMPTY_UUID = new UUID(0, 0);
+
     /**
      * The type of the security token.
      */
@@ -69,7 +70,7 @@ public class Token extends Secret {
     }
 
     public Token(final String value, final TokenType type) {
-        this(value, type, Guid.Empty);
+        this(value, type, EMPTY_UUID);
     }
 
     public Token(final String value, final String typeName) {
@@ -89,7 +90,7 @@ public class Token extends Secret {
         }
         this.type = type.get();
         this.value = value;
-        this.targetIdentity = Guid.Empty;
+        this.targetIdentity = EMPTY_UUID;
     }
 
     public Token(final String value, final TokenType type, final UUID targetIdentity) {
@@ -121,7 +122,7 @@ public class Token extends Secret {
 
         String tokenValue = null;
         TokenType tokenType = null;
-        UUID targetIdentity = Guid.Empty;
+        UUID targetIdentity = EMPTY_UUID;
 
         final NodeList propertyNodes = tokenNode.getChildNodes();
         for (int v = 0; v < propertyNodes.getLength(); v++) {
@@ -152,7 +153,7 @@ public class Token extends Secret {
         tokenValueNode.appendChild(valueValue);
         valueNode.appendChild(tokenValueNode);
 
-        if (!Guid.Empty.equals(this.getTargetIdentity())) {
+        if (!EMPTY_UUID.equals(this.getTargetIdentity())) {
             final Element targetIdentityNode = document.createElement("targetIdentity");
             final Text targetIdentityValue = document.createTextNode(this.getTargetIdentity().toString());
             targetIdentityNode.appendChild(targetIdentityValue);
