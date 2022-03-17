@@ -4,12 +4,6 @@
 package com.microsoft.a4o.credentialstorage.secret;
 
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
-import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -61,55 +55,6 @@ public class Token extends Secret {
 
     public UUID getTargetIdentity() {
         return targetIdentity;
-    }
-
-    public static Token fromXml(final Node tokenNode) {
-        Token value;
-
-        String tokenValue = null;
-        TokenType tokenType = null;
-        UUID targetIdentity = EMPTY_UUID;
-
-        final NodeList propertyNodes = tokenNode.getChildNodes();
-        for (int v = 0; v < propertyNodes.getLength(); v++) {
-            final Node propertyNode = propertyNodes.item(v);
-            final String propertyName = propertyNode.getNodeName();
-            switch (propertyName) {
-                case "Type":
-                    tokenType = TokenType.valueOf(TokenType.class, XmlHelper.getText(propertyNode));
-                    break;
-                case "Value":
-                    tokenValue = XmlHelper.getText(propertyNode);
-                    break;
-                case "targetIdentity":
-                    targetIdentity = UUID.fromString(XmlHelper.getText(propertyNode));
-                    break;
-            }
-        }
-        value = new Token(tokenValue, tokenType, targetIdentity);
-        return value;
-    }
-
-    public Element toXml(final Document document) {
-        final Element valueNode = document.createElement("value");
-
-        final Element typeNode = document.createElement("Type");
-        final Text typeValue = document.createTextNode(this.type.toString());
-        typeNode.appendChild(typeValue);
-        valueNode.appendChild(typeNode);
-
-        final Element tokenValueNode = document.createElement("Value");
-        final Text valueValue = document.createTextNode(this.value);
-        tokenValueNode.appendChild(valueValue);
-        valueNode.appendChild(tokenValueNode);
-
-        if (!EMPTY_UUID.equals(this.getTargetIdentity())) {
-            final Element targetIdentityNode = document.createElement("targetIdentity");
-            final Text targetIdentityValue = document.createTextNode(this.getTargetIdentity().toString());
-            targetIdentityNode.appendChild(targetIdentityValue);
-            valueNode.appendChild(targetIdentityNode);
-        }
-        return valueNode;
     }
 
     /**

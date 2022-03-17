@@ -4,12 +4,6 @@
 package com.microsoft.a4o.credentialstorage.secret;
 
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
-import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
 import java.util.Objects;
 
@@ -57,43 +51,6 @@ public final class Credential extends Secret {
      */
     public String getPassword() {
         return password;
-    }
-
-    public static Credential fromXml(final Node credentialNode) {
-        Credential value;
-        String password = null;
-        String username = null;
-
-        final NodeList propertyNodes = credentialNode.getChildNodes();
-        for (int v = 0; v < propertyNodes.getLength(); v++) {
-            final Node propertyNode = propertyNodes.item(v);
-            if (propertyNode.getNodeType() != Node.ELEMENT_NODE) continue;
-
-            final String propertyName = propertyNode.getNodeName();
-            if ("Password".equals(propertyName)) {
-                password = XmlHelper.getText(propertyNode);
-            } else if ("Username".equals(propertyName)) {
-                username = XmlHelper.getText(propertyNode);
-            }
-        }
-        value = new Credential(username, password);
-        return value;
-    }
-
-    public Element toXml(final Document document) {
-        final Element valueNode = document.createElement("value");
-
-        final Element passwordNode = document.createElement("Password");
-        final Text passwordValue = document.createTextNode(this.password);
-        passwordNode.appendChild(passwordValue);
-        valueNode.appendChild(passwordNode);
-
-        final Element usernameNode = document.createElement("Username");
-        final Text usernameValue = document.createTextNode(this.username);
-        usernameNode.appendChild(usernameValue);
-        valueNode.appendChild(usernameNode);
-
-        return valueNode;
     }
 
     /**

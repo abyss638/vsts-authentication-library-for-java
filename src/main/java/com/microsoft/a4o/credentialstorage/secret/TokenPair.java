@@ -4,17 +4,7 @@
 package com.microsoft.a4o.credentialstorage.secret;
 
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
-import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
 
@@ -63,79 +53,6 @@ public class TokenPair extends Secret {
 
     public Map<String, String> getParameters() {
         return parameters;
-    }
-
-    public static TokenPair fromXml(final Node tokenPairNode) {
-        TokenPair value;
-
-        String accessToken = null;
-        String refreshToken = null;
-
-        final NodeList propertyNodes = tokenPairNode.getChildNodes();
-        for (int v = 0; v < propertyNodes.getLength(); v++) {
-            final Node propertyNode = propertyNodes.item(v);
-            final String propertyName = propertyNode.getNodeName();
-            if ("accessToken".equals(propertyName)) {
-                accessToken = XmlHelper.getText(propertyNode);
-            } else if ("refreshToken".equals(propertyName)) {
-                refreshToken = XmlHelper.getText(propertyNode);
-            }
-        }
-
-        value = new TokenPair(accessToken, refreshToken);
-        return value;
-    }
-
-    public Element toXml(final Document document) {
-        final Element valueNode = document.createElement("value");
-
-        final Element accessTokenNode = document.createElement("accessToken");
-        final Text accessTokenValue = document.createTextNode(accessToken.getValue());
-        accessTokenNode.appendChild(accessTokenValue);
-        valueNode.appendChild(accessTokenNode);
-
-        final Element refreshTokenNode = document.createElement("refreshToken");
-        final Text refreshTokenValue = document.createTextNode(refreshToken.getValue());
-        refreshTokenNode.appendChild(refreshTokenValue);
-        valueNode.appendChild(refreshTokenNode);
-
-        return valueNode;
-    }
-
-    public static String toXmlString(final TokenPair tokenPair) {
-        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        try {
-            final DocumentBuilder builder = dbf.newDocumentBuilder();
-            final Document document = builder.newDocument();
-
-            final Element element = tokenPair.toXml(document);
-            document.appendChild(element);
-
-            return XmlHelper.toString(document);
-        }
-        catch (final Exception e) {
-            throw new Error(e);
-        }
-    }
-
-    public static TokenPair fromXmlString(final String xmlString) {
-        final byte[] bytes = StringHelper.UTF8GetBytes(xmlString);
-        final ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
-        return fromXmlStream(inputStream);
-    }
-
-    static TokenPair fromXmlStream(final InputStream source) {
-        final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        try {
-            final DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
-            final Document document = builder.parse(source);
-            final Element rootElement = document.getDocumentElement();
-
-            return TokenPair.fromXml(rootElement);
-        }
-        catch (final Exception e) {
-            throw new Error(e);
-        }
     }
 
     /**
