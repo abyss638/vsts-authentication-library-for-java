@@ -3,58 +3,36 @@
 
 package com.microsoft.a4o.credentialstorage.secret;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public enum TokenType {
-    Unknown(null, 0),
+    Unknown(null),
     /**
      * Access Token
      */
-    Access("Access Token", 1),
+    Access("Access Token"),
     /**
      * Refresh Token
      */
-    Refresh("Refresh Token", 2),
+    Refresh("Refresh Token"),
     /**
      * Personal Access Token, can be compact or not.
      */
-    Personal("Personal Access Token", 3),
+    Personal("Personal Access Token"),
     /**
      * Federated Authentication (aka FedAuth) Token
      */
-    Federated("Federated Authentication Token", 4),
+    Federated("Federated Authentication Token"),
     /**
      * Used only for testing
      */
-    Test("Test-only Token", 5);
-
-    private static final Map<Integer, TokenType> valueToTokenType;
-
-    static {
-        valueToTokenType = new HashMap<Integer, TokenType>();
-        for (final TokenType value : TokenType.values()) {
-            valueToTokenType.put(value.getValue(), value);
-        }
-    }
+    Test("Test-only Token");
 
     private final String description;
-    private final int value;
 
-    TokenType(final String description, final int value) {
+    TokenType(final String description) {
         this.description = description;
-        this.value = value;
     }
 
     public String getDescription() {
         return description;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    public static TokenType fromValue(final int value) {
-        return valueToTokenType.get(value);
     }
 }

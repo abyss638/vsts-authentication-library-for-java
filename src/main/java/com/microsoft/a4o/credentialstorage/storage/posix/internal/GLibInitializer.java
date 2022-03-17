@@ -4,9 +4,9 @@
 package com.microsoft.a4o.credentialstorage.storage.posix.internal;
 
 /**
- * Singleton instance to make sure we only initialize glib once.
+ * Singleton-instance to make sure we only initialize glib once.
  *
- * Otherwise we may see warnings such as: g_set_application_name() called multiple times
+ * Otherwise, we may see warnings such as: g_set_application_name() called multiple times
  */
 public class GLibInitializer {
 

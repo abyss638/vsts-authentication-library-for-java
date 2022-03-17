@@ -13,7 +13,7 @@ public class InsecureInMemoryStore<E extends Secret> implements SecretStore<E> {
     private final ConcurrentMap<String, E> store;
 
     public InsecureInMemoryStore() {
-        store = new ConcurrentHashMap<String, E>();
+        store = new ConcurrentHashMap<>();
     }
 
     @Override

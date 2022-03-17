@@ -7,6 +7,7 @@ import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.secret.Credential;
 import com.microsoft.a4o.credentialstorage.secret.Token;
 import com.microsoft.a4o.credentialstorage.secret.TokenPair;
+import com.microsoft.a4o.credentialstorage.secret.TokenType;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +17,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,7 +27,6 @@ class KeychainSecurityCliStore {
     private static final String DELETE_GENERIC_PASSWORD = "delete-generic-password";
     private static final String FIND_GENERIC_PASSWORD = "find-generic-password";
     private static final String ADD_GENERIC_PASSWORD = "add-generic-password";
-    private static final String SHOW_KEYCHAIN_INFO = "show-keychain-info";
     private static final String ACCOUNT_PARAMETER = "-a";
     private static final String ACCOUNT_METADATA = "acct";
     private static final String PASSWORD = "password";
@@ -96,10 +95,9 @@ class KeychainSecurityCliStore {
 
     private static void parseKeychainMetaData(final String metadata, final Map<String, Object> result) {
         final StringReader sr = new StringReader(metadata);
-        final BufferedReader br = new BufferedReader(sr);
-        boolean parsingAttributes = false;
-        String line;
-        try {
+        try (BufferedReader br = new BufferedReader(sr)) {
+            boolean parsingAttributes = false;
+            String line;
             while ((line = br.readLine()) != null) {
                 if (parsingAttributes) {
                     parseAttributeLine(line, result);
@@ -113,12 +111,6 @@ class KeychainSecurityCliStore {
             }
         } catch (final IOException e) {
             throw new Error(e);
-        } finally {
-            try {
-                br.close();
-            } catch (IOException e) {
-                // never happens
-            }
         }
     }
 
@@ -269,26 +261,6 @@ class KeychainSecurityCliStore {
         // TODO: else if ("sint32".equals(type))
     }
 
-    public boolean isKeychainAvailable() {
-        final String stdOut, stdErr;
-        try {
-            final ProcessBuilder processBuilder = new ProcessBuilder(
-                SECURITY,
-                SHOW_KEYCHAIN_INFO
-            );
-            final Process process = processBuilder.start();
-            final int result = process.waitFor();
-            stdOut = readToString(process.getInputStream());
-            stdErr = readToString(process.getErrorStream());
-            checkResult(result, stdOut, stdErr);
-        } catch (final IOException | InterruptedException e) {
-            throw new Error(e);
-        } catch (final SecurityException e) {
-            return false;
-        }
-        return true;
-    }
-
     private static void checkResult(final int result, final String stdOut, final String stdErr) {
         if (result != 0) {
             if (result == USER_INTERACTION_NOT_ALLOWED_EXIT_CODE) {
@@ -354,7 +326,7 @@ class KeychainSecurityCliStore {
             final String typeName = (String) metaData.get(ACCOUNT_METADATA);
             final String password = (String) metaData.get(PASSWORD);
 
-            result = new Token(password, typeName);
+            result = new Token(password, TokenType.valueOf(typeName));
         } else {
             result = null;
         }
@@ -427,9 +399,7 @@ class KeychainSecurityCliStore {
     }
 
     private void writeTokenKind(final String targetName, final SecretKind secretKind, final Token token) {
-        final AtomicReference<String> accountNameReference = new AtomicReference<>();
-        Token.getFriendlyNameFromType(token.getType(), accountNameReference);
-        final String accountName = accountNameReference.get();
+        final String accountName = token.getType().name();
         write(secretKind, targetName, accountName, token.getValue());
     }
 

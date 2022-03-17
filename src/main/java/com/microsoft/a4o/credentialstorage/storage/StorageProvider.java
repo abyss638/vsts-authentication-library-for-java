@@ -27,7 +27,7 @@ import java.util.Objects;
 
 public class StorageProvider {
 
-    private static Logger logger  = LoggerFactory.getLogger(StorageProvider.class);
+    private static final Logger logger  = LoggerFactory.getLogger(StorageProvider.class);
 
     public enum SecureOption {
         /**
@@ -52,9 +52,9 @@ public class StorageProvider {
     private static final List<SecretStore<Credential>> PERSISTED_CREDENTIAL_STORE_CANDIDATES;
 
     static {
-        List<SecretStore<Token>> tokenStoreCandidates = new ArrayList<SecretStore<Token>>();
-        List<SecretStore<TokenPair>> tokenPairStoreCandidates = new ArrayList<SecretStore<TokenPair>>();
-        List<SecretStore<Credential>> credentialStoreCandidates = new ArrayList<SecretStore<Credential>>();
+        List<SecretStore<Token>> tokenStoreCandidates = new ArrayList<>();
+        List<SecretStore<TokenPair>> tokenPairStoreCandidates = new ArrayList<>();
+        List<SecretStore<Credential>> credentialStoreCandidates = new ArrayList<>();
 
         if (SystemHelper.isWindows()) {
             tokenStoreCandidates.add(new CredManagerBackedTokenStore());
@@ -85,10 +85,10 @@ public class StorageProvider {
         logger.info("Getting a {} token store that {} be secure", persist ? "persistent" : "non-persistent",
                 secureOption == SecureOption.MUST ? "must" : "could");
 
-        final NonPersistentStoreGenerator<Token> inMemoryStoreGenerator = new NonPersistentStoreGenerator<Token>() {
+        final NonPersistentStoreGenerator<Token> inMemoryStoreGenerator = new NonPersistentStoreGenerator<>() {
             @Override
             public SecretStore<Token> getInsecureNonPersistentStore() {
-                return new InsecureInMemoryStore<Token>();
+                return new InsecureInMemoryStore<>();
             }
 
             @Override
@@ -107,10 +107,10 @@ public class StorageProvider {
         logger.info("Getting a {} tokenPair store that {} be secure", persist ? "persistent" : "non-persistent",
                 secureOption == SecureOption.MUST ? "must" : "could");
 
-        final NonPersistentStoreGenerator<TokenPair> inMemoryStoreGenerator = new NonPersistentStoreGenerator<TokenPair>() {
+        final NonPersistentStoreGenerator<TokenPair> inMemoryStoreGenerator = new NonPersistentStoreGenerator<>() {
             @Override
             public SecretStore<TokenPair> getInsecureNonPersistentStore() {
-                return new InsecureInMemoryStore<TokenPair>();
+                return new InsecureInMemoryStore<>();
             }
 
             @Override
@@ -129,10 +129,10 @@ public class StorageProvider {
         logger.info("Getting a {} credential store that {} be secure", persist ? "persistent" : "non-persistent",
                 secureOption == SecureOption.MUST ? "must" : "could");
 
-        final NonPersistentStoreGenerator<Credential> inMemoryStoreGenerator = new NonPersistentStoreGenerator<Credential>() {
+        final NonPersistentStoreGenerator<Credential> inMemoryStoreGenerator = new NonPersistentStoreGenerator<>() {
             @Override
             public SecretStore<Credential> getInsecureNonPersistentStore() {
-                return new InsecureInMemoryStore<Credential>();
+                return new InsecureInMemoryStore<>();
             }
 
             @Override

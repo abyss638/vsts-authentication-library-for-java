@@ -45,6 +45,7 @@ public final class Credential extends Secret {
 
     /**
      * Unique identifier of the user.
+     * @return username
      */
     public String getUsername() {
         return username;
@@ -52,6 +53,7 @@ public final class Credential extends Secret {
 
     /**
      * Secret related to the username.
+     * @return secret
      */
     public String getPassword() {
         return password;
@@ -104,7 +106,6 @@ public final class Credential extends Secret {
     public boolean equals(final Object obj) {
         return operatorEquals(this, obj instanceof Credential ? ((Credential) obj) : null);
     }
-    // PORT NOTE: Java doesn't support a specific overload (as per IEquatable<T>)
 
     /**
      * Gets a hash code based on the contents of the {@link Credential}.
@@ -113,10 +114,7 @@ public final class Credential extends Secret {
      */
     @Override
     public int hashCode() {
-        // PORT NOTE: Java doesn't have unchecked blocks; the default behaviour is apparently equivalent.
-        {
-            return username.hashCode() + 7 * password.hashCode();
-        }
+        return username.hashCode() + 7 * password.hashCode();
     }
 
     public static void validate(final Credential credentials) {
@@ -145,16 +143,5 @@ public final class Credential extends Secret {
 
         return credential1.username.equals(credential2.username)
                 && credential1.password.equals(credential2.password);
-    }
-
-    /**
-     * Compares two credentials for inequality.
-     *
-     * @param credential1 Credential to compare.
-     * @param credential2 Credential to compare.
-     * @return False if equal; true otherwise.
-     */
-    public static boolean operatorNotEquals(final Credential credential1, final Credential credential2) {
-        return !operatorEquals(credential1, credential2);
     }
 }

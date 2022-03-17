@@ -16,12 +16,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class TokenPair extends Secret {
-    private static final Map<String, String> EMPTY_MAP = Collections.unmodifiableMap(new LinkedHashMap<String, String>(0));
-
     /**
      * Access token, used to grant access to resources.
      */
@@ -53,7 +50,7 @@ public class TokenPair extends Secret {
 
         this.accessToken = new Token(accessToken, TokenType.Access);
         this.refreshToken = new Token(refreshToken, TokenType.Refresh);
-        this.parameters = EMPTY_MAP;
+        this.parameters = Collections.emptyMap();
     }
 
     public Token getAccessToken() {
@@ -114,9 +111,7 @@ public class TokenPair extends Secret {
             final Element element = tokenPair.toXml(document);
             document.appendChild(element);
 
-            final String result = XmlHelper.toString(document);
-
-            return result;
+            return XmlHelper.toString(document);
         }
         catch (final Exception e) {
             throw new Error(e);
@@ -136,9 +131,7 @@ public class TokenPair extends Secret {
             final Document document = builder.parse(source);
             final Element rootElement = document.getDocumentElement();
 
-            final TokenPair result = TokenPair.fromXml(rootElement);
-
-            return result;
+            return TokenPair.fromXml(rootElement);
         }
         catch (final Exception e) {
             throw new Error(e);
@@ -155,7 +148,6 @@ public class TokenPair extends Secret {
     public boolean equals(final Object object) {
         return operatorEquals(this, object instanceof TokenPair ? ((TokenPair) object) : null);
     }
-    // PORT NOTE: Java doesn't support a specific overload (as per IEquatable<T>)
 
     /**
      * Gets a hash code based on the contents of the {@link TokenPair}.
@@ -164,10 +156,7 @@ public class TokenPair extends Secret {
      */
     @Override
     public int hashCode() {
-        // PORT NOTE: Java doesn't have unchecked blocks; the default behaviour is apparently equivalent.
-        {
-            return accessToken.hashCode() * refreshToken.hashCode();
-        }
+        return accessToken.hashCode() * refreshToken.hashCode();
     }
 
     /**
@@ -185,16 +174,5 @@ public class TokenPair extends Secret {
 
         return Token.operatorEquals(pair1.accessToken, pair2.accessToken)
                 && Token.operatorEquals(pair1.refreshToken, pair2.refreshToken);
-    }
-
-    /**
-     * Compares two {@link TokenPair} for inequality.
-     *
-     * @param pair1 {@link TokenPair} to compare.
-     * @param pair2 {@link TokenPair} to compare.
-     * @return False if equal; true otherwise.
-     */
-    public static boolean operatorNotEquals(final TokenPair pair1, final TokenPair pair2) {
-        return !operatorEquals(pair1, pair2);
     }
 }
