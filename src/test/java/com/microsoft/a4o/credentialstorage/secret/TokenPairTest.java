@@ -5,7 +5,6 @@ package com.microsoft.a4o.credentialstorage.secret;
 
 import com.microsoft.a4o.credentialstorage.helpers.StringHelperTest;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
-import org.junit.Assert;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -47,25 +46,4 @@ public class TokenPairTest {
         assertEquals(tokenPair.AccessToken.Value, actualTokenPair.AccessToken.Value);
         assertEquals(tokenPair.RefreshToken.Value, actualTokenPair.RefreshToken.Value);
     }
-
-    @Test
-    public void accessTokenResponse_RFC6749() {
-        final String input =
-            "     {\n" +
-            "       \"access_token\":\"2YotnFZFEjr1zCsicMWpAA\",\n" +
-            "       \"token_type\":\"example\",\n" +
-            "       \"expires_in\":3600,\n" +
-            "       \"refresh_token\":\"tGzv3JOkF0XG5Qx2TlKWIA\",\n" +
-            "       \"example_parameter\":\"example_value\"\n" +
-            "     }";
-
-        final TokenPair actual = new TokenPair(input);
-
-        Assert.assertEquals("2YotnFZFEjr1zCsicMWpAA", actual.AccessToken.Value);
-        Assert.assertEquals("tGzv3JOkF0XG5Qx2TlKWIA", actual.RefreshToken.Value);
-        Assert.assertEquals("3600.0", actual.Parameters.get("expires_in"));
-        Assert.assertEquals("example_value", actual.Parameters.get("example_parameter"));
-        Assert.assertEquals("example", actual.Parameters.get("token_type"));
-    }
-
 }

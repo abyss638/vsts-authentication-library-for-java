@@ -3,7 +3,6 @@
 
 package com.microsoft.a4o.credentialstorage.secret;
 
-import com.microsoft.a4o.credentialstorage.helpers.PropertyBag;
 import com.microsoft.a4o.credentialstorage.helpers.StringHelper;
 import com.microsoft.a4o.credentialstorage.helpers.XmlHelper;
 import org.w3c.dom.Document;
@@ -22,8 +21,6 @@ import java.util.Map;
 
 public class TokenPair extends Secret {
     private static final Map<String, String> EMPTY_MAP = Collections.unmodifiableMap(new LinkedHashMap<String, String>(0));
-    private static final String ACCESS_TOKEN = "access_token";
-    private static final String REFRESH_TOKEN = "refresh_token";
 
     /**
      * Creates a new {@link TokenPair} from raw access and refresh token data.
@@ -42,33 +39,6 @@ public class TokenPair extends Secret {
         this.AccessToken = new Token(accessToken, TokenType.Access);
         this.RefreshToken = new Token(refreshToken, TokenType.Refresh);
         this.Parameters = EMPTY_MAP;
-    }
-
-    public TokenPair(final String accessTokenResponse) {
-        this(PropertyBag.fromJson(accessTokenResponse));
-    }
-
-    public TokenPair(final PropertyBag bag) {
-        final LinkedHashMap<String, String> parameters = new LinkedHashMap<String, String>();
-        String accessToken = null;
-        String refreshToken = null;
-        for (final Map.Entry<String, Object> pair : bag.entrySet()) {
-            final String name = pair.getKey();
-            final Object value = pair.getValue();
-            if (ACCESS_TOKEN.equals(name)) {
-                accessToken = (String) value;
-            }
-            else if (REFRESH_TOKEN.equals(name)) {
-                refreshToken = (String) value;
-            }
-            else {
-                parameters.put(name, value.toString());
-            }
-
-        }
-        this.AccessToken = new Token(accessToken, TokenType.Access);
-        this.RefreshToken = new Token(refreshToken, TokenType.Refresh);
-        this.Parameters = Collections.unmodifiableMap(parameters);
     }
 
     /**
