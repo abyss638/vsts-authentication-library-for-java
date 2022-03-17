@@ -56,8 +56,8 @@ public class AppCredential {
     private static void printCredential(String credentialName, Credential storedCredential) {
         if (storedCredential != null) {
             System.out.println("Retrieved the existing credentials using the key: " + credentialName);
-            System.out.println("  Username: " + storedCredential.Username);
-            System.out.println("  Password: " + storedCredential.Password);
+            System.out.println("  Username: " + storedCredential.getUsername());
+            System.out.println("  Password: " + storedCredential.getPassword());
         } else {
             System.out.println("No stored credentials under the key: " + credentialName);
         }

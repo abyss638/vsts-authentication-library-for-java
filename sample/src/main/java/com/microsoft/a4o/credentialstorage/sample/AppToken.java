@@ -55,7 +55,7 @@ public class AppToken {
     private static void printToken(String tokenName, Token storedToken) {
         if (storedToken != null) {
             System.out.println("Retrieved the existing token using the key: " + tokenName);
-            System.out.println("  Token: " + storedToken.Value + " (Type: " + storedToken.Type + ")");
+            System.out.println("  Token: " + storedToken.getValue() + " (Type: " + storedToken.getType() + ")");
         } else {
             System.out.println("No stored token under the key: " + tokenName);
         }
