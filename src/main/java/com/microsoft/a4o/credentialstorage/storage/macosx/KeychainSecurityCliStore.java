@@ -378,8 +378,9 @@ class KeychainSecurityCliStore {
             final Process process = addProcessBuilder.start();
             final String command = StringHelper.join(" ", commandParts, 0, commandParts.length, QUOTING_PROCESSOR);
 
-            final PrintWriter writer = new PrintWriter(process.getOutputStream());
-            writer.println(command);
+            try (final PrintWriter writer = new PrintWriter(process.getOutputStream())) {
+                writer.println(command);
+            }
 
             final int result = process.waitFor();
             stdOut = readToString(process.getInputStream());
