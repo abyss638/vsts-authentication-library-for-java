@@ -4,18 +4,13 @@ Licensed under the MIT license. See License.txt in the project root. -->
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>com.microsoft.alm</groupId>
-        <artifactId>auth-lib-parent</artifactId>
-        <version>0.6.5</version>
-    </parent>
-    <artifactId>auth-sample</artifactId>
+    <groupId>com.microsoft.a4o</groupId>
+    <artifactId>credential-secure-storage-sample</artifactId>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Sample App of the Storage Library</name>
-    <description>Sample App to demonstrate how to use the Storage Library to store credentials in a store.
-    </description>
-    <url>https://java.visualstudio.com/</url>
+    <name>Sample Application for the Credential Secure Storage library</name>
+    <description>Sample to demonstrate how to use the Storage Library to store credentials or token.</description>
 
     <build>
         <plugins>
@@ -31,20 +26,15 @@ Licensed under the MIT license. See License.txt in the project root. -->
 
     <dependencies>
         <dependency>
-            <groupId>com.microsoft.alm</groupId>
-            <artifactId>auth-secure-storage</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>com.microsoft.a4o</groupId>
+            <artifactId>credential-secure-storage</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-jdk14</artifactId>
-            <version>${slf4j.version}</version>
+            <version>1.7.36</version>
         </dependency>
     </dependencies>
 </project>

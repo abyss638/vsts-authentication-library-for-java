@@ -1,51 +1,57 @@
-<!-- Copyright (c) Microsoft. All rights reserved.
-Licensed under the MIT license. See License.txt in the project root. -->
+<!--
+MIT License
+
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.microsoft.alm</groupId>
-  <artifactId>auth-lib-parent</artifactId>
-  <version>0.6.5</version>
-  <packaging>pom</packaging>
+  <groupId>com.microsoft.a4o</groupId>
+  <artifactId>credential-secure-storage</artifactId>
+  <version>1.0.0</version>
+  <packaging>jar</packaging>
 
-  <name>Authentication Library for Visual Studio Team Services and Team Foundation Server</name>
-  <description>Parent POM for supporting multi-module Authentication library for VSTS and TFS</description>
-  <url>https://java.visualstudio.com/</url>
+  <name>Secure storage for storing credentials or tokens.</name>
+  <description>Unified platform-independent interface to store secrets in credential managers provided by OS (Windows, macOS, Linux).</description>
 
-  <modules>
-    <module>common</module>
-    <module>storage</module>
-    <module>core</module>
-    <module>providers</module>
-    <module>sample</module>
-  </modules>
+  <developers>
+    <developer>
+      <id>microsoft</id>
+      <name>Microsoft</name>
+    </developer>
+  </developers>
 
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <url>http://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
 
-  <developers>
-    <developer>
-      <name>David Staheli</name>
-      <email>dastahel@microsoft.com</email>
-      <organization>Microsoft</organization>
-      <organizationUrl>http://www.microsoft.com/</organizationUrl>
-    </developer>
-    <developer>
-      <name>Yang Cao</name>
-      <email>yacao@microsoft.com</email>
-      <organization>Microsoft</organization>
-      <organizationUrl>http://www.microsoft.com/</organizationUrl>
-    </developer>
-  </developers>
-
   <scm>
-    <connection>scm:git:https://github.com/Microsoft/vsts-authentication-library-for-java.git</connection>
-    <developerConnection>scm:git:https://github.com/Microsoft/vsts-authentication-library-for-java.git</developerConnection>
-    <url>https://github.com/Microsoft/vsts-authentication-library-for-java</url>
+    <connection>scm:git:https://github.com/Microsoft/credential-secure-storage-for-java.git</connection>
+    <developerConnection>scm:git:https://github.com/Microsoft/credential-secure-storage-for-java.git</developerConnection>
+    <url>https://github.com/Microsoft/credential-secure-storage-for-java</url>
     <tag>HEAD</tag>
   </scm>
 
@@ -63,12 +69,23 @@ Licensed under the MIT license. See License.txt in the project root. -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
     <slf4j.version>1.7.36</slf4j.version>
-    <oauth2.useragent.version>0.11.3</oauth2.useragent.version>
-    <jackson.version>2.13.1</jackson.version>
+    <jna.version>5.9.0</jna.version>
+    <junit.version>4.13.2</junit.version>
   </properties>
 
   <build>
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <targetPath>META-INF</targetPath>
+        <includes>
+          <include>LICENSE.txt</include>
+          <include>NOTICE.txt</include>
+        </includes>
+      </resource>
+    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -134,26 +151,6 @@ Licensed under the MIT license. See License.txt in the project root. -->
           <version>3.0.1</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.gmavenplus</groupId>
-          <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.13.1</version>
-          <executions>
-            <execution>
-              <id>gmavenplus-test</id>
-              <goals>
-                <goal>compileTests</goal>
-              </goals>
-            </execution>
-          </executions>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.groovy</groupId>
-              <artifactId>groovy-ant</artifactId>
-              <version>3.0.9</version>
-            </dependency>
-          </dependencies>
-        </plugin>
-        <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
           <version>1.6.12</version>
@@ -161,6 +158,73 @@ Licensed under the MIT license. See License.txt in the project root. -->
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>11</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>11</source>
+          <target>11</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>net.ju-n.maven.plugins</groupId>
+        <artifactId>checksum-maven-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>artifacts</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <algorithms>
+            <algorithm>SHA-256</algorithm>
+          </algorithms>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
@@ -195,6 +259,9 @@ Licensed under the MIT license. See License.txt in the project root. -->
                 <property name="headerFile" value="config/checkstyle/java.header" />
                 <property name="fileExtensions" value="java" />
               </module>
+              <module name="TreeWalker">
+                <module name="UnusedImports"/>
+              </module>
             </module>
           </checkstyleRules>
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
@@ -222,92 +289,33 @@ Licensed under the MIT license. See License.txt in the project root. -->
     </plugins>
   </build>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>com.microsoft.alm</groupId>
-        <artifactId>auth-common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.microsoft.alm</groupId>
-        <artifactId>auth-core</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.microsoft.alm</groupId>
-        <artifactId>auth-secure-storage</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.microsoft.alm</groupId>
-        <artifactId>auth-providers</artifactId>
-        <version>${project.version}</version>
-      </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>net.java.dev.jna</groupId>
+      <artifactId>jna-platform</artifactId>
+      <version>${jna.version}</version>
+    </dependency>
 
-      <dependency>
-        <groupId>com.microsoft.alm</groupId>
-        <artifactId>oauth2-useragent</artifactId>
-        <version>${oauth2.useragent.version}</version>
-      </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j.version}</version>
+    </dependency>
 
-      <dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>${jackson.version}</version>
-      </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>${slf4j.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-          <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
-          <version>${slf4j.version}</version>
-      </dependency>
-
-      <!-- TESTING DEPENDENCIES -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-nop</artifactId>
-        <version>${slf4j.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.11</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>1.7</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.github.tomakehurst</groupId>
-        <artifactId>wiremock</artifactId>
-        <version>1.57</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.littleshoot</groupId>
-        <artifactId>littleproxy</artifactId>
-        <version>1.1.0-beta1</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>3.0.9</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
   
   <profiles>
     <profile>
